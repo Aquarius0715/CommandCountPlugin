@@ -1,0 +1,6 @@
+name: CommandCountPlugin
+version: 1.0.0
+main: aquarius0715.commandcountplugin.CommandCountPlugin
+api-version: 1.13
+commands:
+  cmdcount:
