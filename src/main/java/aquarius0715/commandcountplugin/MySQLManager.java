@@ -93,7 +93,7 @@ public class MySQLManager {
         }
 
         this.MySQL.close(this.con);
-        return Boolean.valueOf(this.connected);
+        return this.connected;
     }
 
     //////////////////////////////////////////

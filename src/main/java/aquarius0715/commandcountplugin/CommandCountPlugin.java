@@ -35,7 +35,7 @@ public final class CommandCountPlugin extends JavaPlugin {
     SQLSelect sqlSelect = new SQLSelect(this);
     SQLUpdate sqlUpdate = new SQLUpdate(this);
 
-    Date startDate;
+    String startDate;
     Date finishDate;
 
     @Override

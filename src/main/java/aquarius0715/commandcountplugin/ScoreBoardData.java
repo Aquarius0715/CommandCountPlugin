@@ -12,7 +12,7 @@ public class ScoreBoardData {
         this.plugin = plugin;
     }
 
-    public void addTenthBoard(String displayName, int score) {
+    public void addScoreBoard(String displayName, int score) {
         plugin.first = plugin.scoreboard.registerNewTeam("first");
         plugin.first.addEntry("1位 ");
         plugin.first.setSuffix(displayName + " : " + "スコア " + score);

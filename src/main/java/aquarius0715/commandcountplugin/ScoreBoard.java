@@ -64,7 +64,7 @@ public class ScoreBoard {
                     }
                 } else {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.sendMessage("レイドが終了しました");
+                        player.sendMessage("レイドが終了しました。");
                         player.setScoreboard(requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard());
                         plugin.startDate = null;
                         plugin.pluginStats = false;

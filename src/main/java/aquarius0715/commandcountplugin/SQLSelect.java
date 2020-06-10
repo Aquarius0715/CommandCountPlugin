@@ -25,7 +25,7 @@ public class SQLSelect {
         String sql = "SELECT scoreBoardStats FROM commandCountTable WHERE UUID = '" + player.getUniqueId().toString() + "' ORDER BY Id LIMIT 1;";
         ResultSet resultSet = plugin.MySQLManager.query(sql);
         if (resultSet == null) {
-            player.sendMessage("データベースにあなたの情報がありません。登録します");
+            player.sendMessage("データベースにあなたの情報がありません。登録します。");
             plugin.sqlInsert.insertDefaultTable(player);
         }
 
@@ -54,7 +54,7 @@ public class SQLSelect {
             return;
         }
 
-        plugin.scoreBoardData.addTenthBoard(player.getDisplayName(), resultSet.getInt("cmdCount")); //TODO java.sql.SQLException: Illegal operation on empty result set.
+        plugin.scoreBoardData.addScoreBoard(player.getDisplayName(), resultSet.getInt("cmdCount")); //TODO java.sql.SQLException: Illegal operation on empty result set.
     }
 
     public boolean sqlConnectSafely() {

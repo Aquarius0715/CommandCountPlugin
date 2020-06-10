@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.Date;
 
 public class Commands implements CommandExecutor {
 
@@ -76,11 +75,11 @@ public class Commands implements CommandExecutor {
                         sender.sendMessage("あなたはこのコマンドを使用することができません");
                         return false;
                     } else {
-                        plugin.startDate = new Date();
-                        sender.sendMessage(plugin.startDate.toString());
+
+                        plugin.sqlInsert.FormStartTime();
+                        sender.sendMessage(plugin.startDate);
                         for (Player player : Bukkit.getOnlinePlayers()) {
                             plugin.sqlInsert.insertDefaultTable(player);
-                            plugin.sqlUpdate.updateStartDate(player);
                         }
                         plugin.scoreBoard.updateScoreBoard();
 
@@ -140,4 +139,6 @@ public class Commands implements CommandExecutor {
         }
         return false;
     }
+
+
 }

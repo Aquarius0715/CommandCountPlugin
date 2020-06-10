@@ -34,7 +34,7 @@ public class SQLUpdate {
         String sql = "UPDATE commandCountTable set scoreBoardStats " +
                 "= (select replace(scoreBoardStats, false, true)) " +
                 "WHERE StartDate = '"
-                + plugin.startDate.toString()
+                + plugin.startDate
                 + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         plugin.MySQLManager.execute(sql);
@@ -46,7 +46,7 @@ public class SQLUpdate {
         }
 
         String sql = "SELECT cmdCount FROM commandCountTable WHERE StartDate = '"
-                + plugin.startDate.toString() + "' AND UUID = '"
+                + plugin.startDate + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         ResultSet resultSet = plugin.MySQLManager.query(sql);
 
@@ -55,7 +55,7 @@ public class SQLUpdate {
                 + resultSet.getInt("cmdCount") + ", " //TODO java.sql.SQLException: Illegal operation on empty result set.
                 + resultSet.getInt("cmdCount") + 1 + ")) "
                 + "WHERE StartDate = '"
-                + plugin.startDate.toString()
+                + plugin.startDate
                 + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         plugin.MySQLManager.execute(sql1);
@@ -67,7 +67,7 @@ public class SQLUpdate {
         }
 
         String sql = "UPDATE commandCountTable set StartDate = '"
-                + plugin.startDate.toString()
+                + plugin.startDate
                 + "' WHERE UUID = '"
                 + player.getUniqueId().toString()
                 + "' + AND StartDate IS NULL;";
