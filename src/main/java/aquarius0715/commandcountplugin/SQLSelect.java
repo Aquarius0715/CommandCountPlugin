@@ -29,6 +29,8 @@ public class SQLSelect {
             plugin.sqlInsert.insertDefaultTable(player);
         }
 
+        requireNonNull(resultSet).next();
+
         if (Objects.requireNonNull(resultSet).getBoolean("scoreBoardStats")) {
             player.sendMessage("スコアボードを非表示にしました");
             plugin.sqlUpdate.updateScoreBoardStatsFalse(player);
@@ -46,7 +48,7 @@ public class SQLSelect {
         }
 
         String sql = "SELECT cmdCount FROM commandCountTable WHERE UUID = '" + player.getUniqueId().toString() + "' AND StartDate = '"
-                + plugin.startDate + "';";
+                + plugin.dateFormant.FormStartTime() + "';";
         ResultSet resultSet = plugin.MySQLManager.query(sql);
         if (resultSet == null) {
             player.sendMessage("データベースにあなたの情報がありません。登録します");
@@ -54,7 +56,9 @@ public class SQLSelect {
             return;
         }
 
-        plugin.scoreBoardData.addScoreBoard(player.getDisplayName(), resultSet.getInt("cmdCount")); //TODO java.sql.SQLException: Illegal operation on empty result set.
+        resultSet.next();
+
+        plugin.scoreBoardData.addScoreBoard();
     }
 
     public boolean sqlConnectSafely() {

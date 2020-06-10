@@ -26,9 +26,22 @@ public class ScoreBoard {
         plugin.objective = plugin.scoreboard.registerNewObjective("cmdCount", "Dummy");
         plugin.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         plugin.objective.setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "レイドスコアボード");
+
+        plugin.first = plugin.scoreboard.registerNewTeam("first");
+        plugin.second = plugin.scoreboard.registerNewTeam("second");
+        plugin.third = plugin.scoreboard.registerNewTeam("third");
+        plugin.fourth = plugin.scoreboard.registerNewTeam("fourth");
+        plugin.fifth = plugin.scoreboard.registerNewTeam("fifth");
+        plugin.sixth = plugin.scoreboard.registerNewTeam("sixth");
+        plugin.seventh = plugin.scoreboard.registerNewTeam("seventh");
+        plugin.eighth = plugin.scoreboard.registerNewTeam("eighth");
+        plugin.ninth = plugin.scoreboard.registerNewTeam("ninth");
+        plugin.tenth = plugin.scoreboard.registerNewTeam("tenth");
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             plugin.sqlSelect.selectPlayerScore(player);
         }
+        plugin.scoreBoardData.addScoreBoard();
     }
 
 
@@ -44,11 +57,6 @@ public class ScoreBoard {
             @Override
             public void run() {
 
-                try {
-                    createScoreBoard();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
 
                 if (time[0] >= 0) {
                     if (time[0] % 60 == 0 && time[0] != 0) {
@@ -66,8 +74,8 @@ public class ScoreBoard {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.sendMessage("レイドが終了しました。");
                         player.setScoreboard(requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard());
-                        plugin.startDate = null;
-                        plugin.pluginStats = false;
+                        plugin.StartDate = null;
+                        plugin.gameStats = false;
                         cancel();
                     }
                 }

@@ -1,6 +1,7 @@
 package aquarius0715.commandcountplugin;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -18,12 +19,11 @@ public class SQLUpdate {
         if (!sqlConnectSafely()) {
             return;
         }
-        String sql = "UPDATE commandCountTable set scoreBoardStats " +
-                "= (select replace(scoreBoardStats, true, false)) " +
+        String sql = "update commandCountTable set scoreBoardStats = false " +
                 "WHERE StartDate = '"
-                + plugin.startDate
+                + plugin.dateFormant.FormStartTime()
                 + "' AND UUID = '"
-                + player.getUniqueId() + "';";
+                + player.getUniqueId().toString() + "';";
         plugin.MySQLManager.execute(sql);
     }
 
@@ -31,10 +31,9 @@ public class SQLUpdate {
         if (!sqlConnectSafely()) {
             return;
         }
-        String sql = "UPDATE commandCountTable set scoreBoardStats " +
-                "= (select replace(scoreBoardStats, false, true)) " +
+        String sql = "update commandCountTable set scoreBoardStats = true " +
                 "WHERE StartDate = '"
-                + plugin.startDate
+                + plugin.dateFormant.FormStartTime()
                 + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         plugin.MySQLManager.execute(sql);
@@ -46,33 +45,22 @@ public class SQLUpdate {
         }
 
         String sql = "SELECT cmdCount FROM commandCountTable WHERE StartDate = '"
-                + plugin.startDate + "' AND UUID = '"
+                + plugin.dateFormant.FormStartTime() + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         ResultSet resultSet = plugin.MySQLManager.query(sql);
+        resultSet.next();
 
-        String sql1 = "UPDATE commandCountTable set cmdScore " +
-                "= (select replace(cmdCount, "
-                + resultSet.getInt("cmdCount") + ", " //TODO java.sql.SQLException: Illegal operation on empty result set.
-                + resultSet.getInt("cmdCount") + 1 + ")) "
+
+        String sql1 = "UPDATE commandCountTable set cmdScore "
+                + resultSet.getInt("cmdCount") + 1                  //TODO fix : java.sql.SQLException: Illegal operation on empty result set.
                 + "WHERE StartDate = '"
-                + plugin.startDate
+                + plugin.dateFormant.FormStartTime()
                 + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         plugin.MySQLManager.execute(sql1);
+        player.sendMessage(ChatColor.GRAY + "スコアが1増えました。");
     }
 
-    public void updateStartDate(Player player) { //TODO メソッドを呼び出したときにStartDateに代入されない
-        if (!sqlConnectSafely()) {
-            return;
-        }
-
-        String sql = "UPDATE commandCountTable set StartDate = '"
-                + plugin.startDate
-                + "' WHERE UUID = '"
-                + player.getUniqueId().toString()
-                + "' + AND StartDate IS NULL;";
-        plugin.MySQLManager.execute(sql);
-    }
 
     public boolean sqlConnectSafely() {
         if (!plugin.MySQLManager.connectCheck()) {

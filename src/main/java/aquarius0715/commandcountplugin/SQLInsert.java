@@ -3,9 +3,6 @@ package aquarius0715.commandcountplugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class SQLInsert {
 
     CommandCountPlugin plugin;
@@ -19,7 +16,7 @@ public class SQLInsert {
             return;
         }
         String sql = "INSERT INTO commandCountTable (StartDate, UUID, playerName, cmdCount, scoreBoardStats) VALUE(" + "'"
-                + plugin.startDate + "' , '"
+                + plugin.dateFormant.FormStartTime() + "' , '"
                 + player.getUniqueId().toString() + "' , '"
                 + player.getDisplayName() + "' , "
                 + 0 + " , "
@@ -34,11 +31,5 @@ public class SQLInsert {
             return false;
         }
         return true;
-    }
-
-    public void FormStartTime() {
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy'-'MM'-'dd' 'HH':'mm':'ss");
-        plugin.startDate = simpleDateFormat.format(date);
     }
 }

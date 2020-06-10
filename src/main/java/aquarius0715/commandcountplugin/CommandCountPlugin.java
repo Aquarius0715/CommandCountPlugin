@@ -7,11 +7,14 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public final class CommandCountPlugin extends JavaPlugin {
 
-    boolean pluginStats = false;
+    boolean pluginStats = true;
+    boolean gameStats = false;
 
     ScoreboardManager scoreboardManager;
     Scoreboard scoreboard;
@@ -34,8 +37,34 @@ public final class CommandCountPlugin extends JavaPlugin {
     MySQLManager MySQLManager = new MySQLManager(this, "CommandCountPlugin");
     SQLSelect sqlSelect = new SQLSelect(this);
     SQLUpdate sqlUpdate = new SQLUpdate(this);
+    DateFormant dateFormant = new DateFormant(this);
 
-    String startDate;
+    String firstDisplayName;
+    String secondDisplayName;
+    String thirdDisplayName;
+    String fourthDisplayName;
+    String fifthDisplayName;
+    String sixthDisplayName;
+    String seventhDisplayName;
+    String eighthDisplayName;
+    String ninthDisplayName;
+    String tenthDisplayName;
+
+    int firstPlayerScore;
+    int secondPlayerScore;
+    int thirdPlayerScore;
+    int fourthPlayerScore;
+    int fifthPlayerScore;
+    int sixthPlayerScore;
+    int seventhPlayerScore;
+    int eighthPlayerScore;
+    int ninthPlayerScore;
+    int tenthPlayerScore;
+
+    String StartDate;
+
+    Map<String, Integer> ScoreBoardNumber = new HashMap<String, Integer>();
+
     Date finishDate;
 
     @Override

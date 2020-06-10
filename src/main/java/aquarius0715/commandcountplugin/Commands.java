@@ -1,13 +1,15 @@
 package aquarius0715.commandcountplugin;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.Date;
+
+import static java.util.Objects.requireNonNull;
 
 public class Commands implements CommandExecutor {
 
@@ -54,37 +56,57 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage("プラグインが無効になっています");
                     return false;
                 } else {
-                    if (!sender.hasPermission("admin")) {
-                        sender.sendMessage("あなたはこのコマンドを使用することができません");
+                    if (!plugin.gameStats) {
+                        sender.sendMessage("レイドはまだ始まっていません。");
                         return false;
                     } else {
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            plugin.sqlInsert.insertDefaultTable(player);
+                        if (!sender.hasPermission("admin")) {
+                            sender.sendMessage("あなたはこのコマンドを使用することができません");
+                            return false;
+                        } else {
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.setScoreboard(requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard());
+                            }
+                            return true;
                         }
-                        return true;
                     }
                 }
             }
 
             if (args[0].equalsIgnoreCase("start")) {
+                Player player = (Player) sender;
                 if (!plugin.pluginStats) {
                     sender.sendMessage("プラグインが無効になっています。");
                     return false;
                 } else {
-                    if (!sender.hasPermission("admin")) {
-                        sender.sendMessage("あなたはこのコマンドを使用することができません");
+                    if (plugin.gameStats) {
+                        sender.sendMessage("レイドは既に始まっています。");
                         return false;
                     } else {
+                        if (!sender.hasPermission("admin")) {
+                            sender.sendMessage("あなたはこのコマンドを使用することができません");
+                            return false;
+                        } else {
 
-                        plugin.sqlInsert.FormStartTime();
-                        sender.sendMessage(plugin.startDate);
-                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            plugin.gameStats = true;
+
                             plugin.sqlInsert.insertDefaultTable(player);
-                        }
-                        plugin.scoreBoard.updateScoreBoard();
 
-                        sender.sendMessage("レイドが始まりました。");
-                        return true;
+                            try {
+                                plugin.scoreBoard.createScoreBoard();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+
+                            plugin.StartDate = new Date().toString();
+
+                            plugin.dateFormant.FormStartTime();
+
+                            plugin.scoreBoard.updateScoreBoard();
+
+                            sender.sendMessage("レイドが始まりました。");
+                            return true;
+                        }
                     }
                 }
             }
@@ -93,6 +115,10 @@ public class Commands implements CommandExecutor {
                 if (!plugin.pluginStats) {
                     sender.sendMessage("プラグインが無効になっています。");
                     return false;
+                } else {
+                    if (!plugin.gameStats) {
+                        sender.sendMessage("レイドはまだ始まっていません。");
+                    }
                 }
                 try {
                     plugin.sqlSelect.selectScoreBoardStats(((Player) sender).getPlayer());
@@ -109,12 +135,15 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage("プラグインが無効になっています。");
                     return false;
                 } else {
+                    if (!plugin.gameStats) {
+                        sender.sendMessage("レイドはまだ始まっていません。");
+                        return false;
+                    }
                     try {
                         plugin.sqlUpdate.updateScore(player);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                    sender.sendMessage(ChatColor.GRAY + "スコアが1増えました");
                     return true;
                 }
             }
