@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 public class ScoreBoard {
 
     CommandCountPlugin plugin;
+    int time = 0;
 
     public ScoreBoard(CommandCountPlugin plugin) {
         this.plugin = plugin;
@@ -45,8 +46,8 @@ public class ScoreBoard {
     }
 
 
-    public void updateScoreBoard() {
-        final int[] time = {plugin.getConfig().getInt("updateTime")};
+    public void Timer() {
+        time = plugin.getConfig().getInt("countTime");
 
         if (!plugin.pluginStats) {
             return;
@@ -58,15 +59,15 @@ public class ScoreBoard {
             public void run() {
 
 
-                if (time[0] >= 0) {
-                    if (time[0] % 60 == 0 && time[0] != 0) {
-                        Bukkit.broadcastMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "終了まであと" + time[0] / 60 + "分です");
+                if (time >= 0) {
+                    if (time % 60 == 0 && time != 0) {
+                        Bukkit.broadcastMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "終了まであと" + time / 60 + "分です");
                     } else {
-                        if (time[0] == 30) {
-                            Bukkit.broadcastMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "終了まであと" + time[0] + "秒です");
+                        if (time == 30) {
+                            Bukkit.broadcastMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "終了まであと" + time + "秒です");
                         } else {
-                            if (time[0] <= 10) {
-                                Bukkit.broadcastMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "終了まであと" + time[0] + "秒です");
+                            if (time <= 10) {
+                                Bukkit.broadcastMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "終了まであと" + time + "秒です");
                             }
                         }
                     }
@@ -76,12 +77,33 @@ public class ScoreBoard {
                         player.setScoreboard(requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard());
                         plugin.StartDate = null;
                         plugin.gameStats = false;
+                        plugin.rankingDisplayName = null;
+                        plugin.rankingScore = null;
                         cancel();
                     }
                 }
                 plugin.finishDate = new Date();
-                time[0]--;
+                time--;
             }
         }.runTaskTimer(plugin, 0, 20);
+    }
+
+    public void updateTime() {
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                if (time == 0) {
+                    cancel();
+                }
+                try {
+                    plugin.sqlSelect.selectPlayerScoreRanking();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                plugin.scoreBoardData.addScoreBoard();
+            }
+        }.runTaskTimer(plugin, 0, plugin.getConfig().getInt("updateTime"));
     }
 }

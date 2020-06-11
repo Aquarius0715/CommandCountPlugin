@@ -1,4 +1,5 @@
-updateTime: 120
+updateTime: 100
+countTime: 10
 mysql:
   host: localhost
   port: 3306

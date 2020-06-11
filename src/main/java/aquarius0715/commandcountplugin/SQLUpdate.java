@@ -21,7 +21,7 @@ public class SQLUpdate {
         }
         String sql = "update commandCountTable set scoreBoardStats = false " +
                 "WHERE StartDate = '"
-                + plugin.dateFormant.FormStartTime()
+                + plugin.StartDate
                 + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         plugin.MySQLManager.execute(sql);
@@ -33,7 +33,7 @@ public class SQLUpdate {
         }
         String sql = "update commandCountTable set scoreBoardStats = true " +
                 "WHERE StartDate = '"
-                + plugin.dateFormant.FormStartTime()
+                + plugin.StartDate
                 + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         plugin.MySQLManager.execute(sql);
@@ -45,16 +45,25 @@ public class SQLUpdate {
         }
 
         String sql = "SELECT cmdCount FROM commandCountTable WHERE StartDate = '"
-                + plugin.dateFormant.FormStartTime() + "' AND UUID = '"
+                + plugin.StartDate + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         ResultSet resultSet = plugin.MySQLManager.query(sql);
+
+        if (resultSet == null) {
+            if (!plugin.joinOnTheWay) {
+                player.sendMessage("途中参加は許可されていません。");
+                return;
+            }
+            player.sendMessage("途中から参加しました。");
+            plugin.sqlInsert.insertDefaultTable(player);
+        }
         resultSet.next();
+        int score = resultSet.getInt("cmdCount") + 1;
 
-
-        String sql1 = "UPDATE commandCountTable set cmdScore "
-                + resultSet.getInt("cmdCount") + 1                  //TODO fix : java.sql.SQLException: Illegal operation on empty result set.
-                + "WHERE StartDate = '"
-                + plugin.dateFormant.FormStartTime()
+        String sql1 = "UPDATE commandCountTable set cmdCount = "
+                + score
+                + " WHERE StartDate = '"
+                + plugin.StartDate
                 + "' AND UUID = '"
                 + player.getUniqueId().toString() + "';";
         plugin.MySQLManager.execute(sql1);

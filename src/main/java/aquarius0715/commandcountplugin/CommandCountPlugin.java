@@ -15,6 +15,7 @@ public final class CommandCountPlugin extends JavaPlugin {
 
     boolean pluginStats = true;
     boolean gameStats = false;
+    boolean joinOnTheWay = true;
 
     ScoreboardManager scoreboardManager;
     Scoreboard scoreboard;
@@ -39,27 +40,10 @@ public final class CommandCountPlugin extends JavaPlugin {
     SQLUpdate sqlUpdate = new SQLUpdate(this);
     DateFormant dateFormant = new DateFormant(this);
 
-    String firstDisplayName;
-    String secondDisplayName;
-    String thirdDisplayName;
-    String fourthDisplayName;
-    String fifthDisplayName;
-    String sixthDisplayName;
-    String seventhDisplayName;
-    String eighthDisplayName;
-    String ninthDisplayName;
-    String tenthDisplayName;
+    String[] rankingDisplayName = new String[10];
 
-    int firstPlayerScore;
-    int secondPlayerScore;
-    int thirdPlayerScore;
-    int fourthPlayerScore;
-    int fifthPlayerScore;
-    int sixthPlayerScore;
-    int seventhPlayerScore;
-    int eighthPlayerScore;
-    int ninthPlayerScore;
-    int tenthPlayerScore;
+
+    int[] rankingScore = new int[10];
 
     String StartDate;
 

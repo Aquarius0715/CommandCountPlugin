@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.Date;
 
 import static java.util.Objects.requireNonNull;
 
@@ -74,7 +73,6 @@ public class Commands implements CommandExecutor {
             }
 
             if (args[0].equalsIgnoreCase("start")) {
-                Player player = (Player) sender;
                 if (!plugin.pluginStats) {
                     sender.sendMessage("プラグインが無効になっています。");
                     return false;
@@ -90,7 +88,11 @@ public class Commands implements CommandExecutor {
 
                             plugin.gameStats = true;
 
-                            plugin.sqlInsert.insertDefaultTable(player);
+                            plugin.dateFormant.FormStartTime();
+
+                            for (Player player1 : Bukkit.getOnlinePlayers()) {
+                                plugin.sqlInsert.insertDefaultTable(player1);
+                            }
 
                             try {
                                 plugin.scoreBoard.createScoreBoard();
@@ -98,11 +100,8 @@ public class Commands implements CommandExecutor {
                                 e.printStackTrace();
                             }
 
-                            plugin.StartDate = new Date().toString();
-
-                            plugin.dateFormant.FormStartTime();
-
-                            plugin.scoreBoard.updateScoreBoard();
+                            plugin.scoreBoard.Timer();
+                            plugin.scoreBoard.updateTime();
 
                             sender.sendMessage("レイドが始まりました。");
                             return true;
@@ -165,7 +164,27 @@ public class Commands implements CommandExecutor {
                 } else
                     sender.sendMessage("プラグインはすでに無効です。");
             }
+
+            if (args[0].equalsIgnoreCase("joinsettings")) {
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage("あなたはこのコマンドを使用することができません。");
+                    return false;
+                }
+                if (!plugin.pluginStats) {
+                    sender.sendMessage("プラグインは無効になっています。");
+                    return false;
+                }
+                if (plugin.joinOnTheWay) {
+                    sender.sendMessage("途中参加を許可しました。");
+                    plugin.joinOnTheWay = false;
+                    return false;
+                } else
+                    sender.sendMessage("途中参加を禁止にしました。");
+                plugin.joinOnTheWay = true;
+                return true;
+            }
         }
+
         return false;
     }
 

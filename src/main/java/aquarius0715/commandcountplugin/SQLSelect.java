@@ -22,10 +22,16 @@ public class SQLSelect {
             return;
         }
 
-        String sql = "SELECT scoreBoardStats FROM commandCountTable WHERE UUID = '" + player.getUniqueId().toString() + "' ORDER BY Id LIMIT 1;";
+        String sql = "SELECT scoreBoardStats FROM commandCountTable WHERE StartDate = '" + plugin.StartDate + "' AND UUID = '"
+                + player.getUniqueId().toString() + "';";
         ResultSet resultSet = plugin.MySQLManager.query(sql);
+
         if (resultSet == null) {
-            player.sendMessage("データベースにあなたの情報がありません。登録します。");
+            if (!plugin.joinOnTheWay) {
+                player.sendMessage("途中参加は許可されていません。");
+                return;
+            }
+            player.sendMessage("途中から参加しました。");
             plugin.sqlInsert.insertDefaultTable(player);
         }
 
@@ -38,7 +44,7 @@ public class SQLSelect {
         } else {
             player.sendMessage("スコアボードを表示にしました");
             plugin.sqlUpdate.updateScoreBoardTrue(player);
-            plugin.scoreBoard.createScoreBoard();
+            player.setScoreboard(plugin.scoreboard);
         }
     }
 
@@ -48,17 +54,37 @@ public class SQLSelect {
         }
 
         String sql = "SELECT cmdCount FROM commandCountTable WHERE UUID = '" + player.getUniqueId().toString() + "' AND StartDate = '"
-                + plugin.dateFormant.FormStartTime() + "';";
+                + plugin.StartDate + "';";
         ResultSet resultSet = plugin.MySQLManager.query(sql);
+
         if (resultSet == null) {
-            player.sendMessage("データベースにあなたの情報がありません。登録します");
+            if (!plugin.joinOnTheWay) {
+                player.sendMessage("途中参加は許可されていません。");
+                return;
+            }
+            player.sendMessage("途中から参加しました。");
             plugin.sqlInsert.insertDefaultTable(player);
-            return;
         }
 
-        resultSet.next();
+        requireNonNull(resultSet).next();
 
         plugin.scoreBoardData.addScoreBoard();
+    }
+
+    public void selectPlayerScoreRanking() throws SQLException {
+        if (!sqlConnectSafely()) {
+            return;
+        }
+        selectScore(1);
+        selectScore(2);
+        selectScore(3);
+        selectScore(4);
+        selectScore(5);
+        selectScore(6);
+        selectScore(7);
+        selectScore(8);
+        selectScore(9);
+        selectScore(10);
     }
 
     public boolean sqlConnectSafely() {
@@ -68,5 +94,16 @@ public class SQLSelect {
             return false;
         }
         return true;
+    }
+
+    public void selectScore(int joinPlayers) throws SQLException {
+        if (Bukkit.getOnlinePlayers().size() >= joinPlayers) {
+            String sql = "SELECT * from commandCountTable where StartDate = '" + plugin.StartDate + "' ORDER BY cmdCount DESC LIMIT 10 OFFSET " + (joinPlayers - 1) + ";";
+            ResultSet resultSet = plugin.MySQLManager.query(sql);
+
+            resultSet.next();
+            plugin.rankingScore[joinPlayers - 1] = resultSet.getInt("cmdCount");
+            plugin.rankingDisplayName[joinPlayers - 1] = resultSet.getString("playerName");
+        }
     }
 }

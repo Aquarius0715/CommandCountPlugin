@@ -16,7 +16,7 @@ public class SQLInsert {
             return;
         }
         String sql = "INSERT INTO commandCountTable (StartDate, UUID, playerName, cmdCount, scoreBoardStats) VALUE(" + "'"
-                + plugin.dateFormant.FormStartTime() + "' , '"
+                + plugin.StartDate + "' , '"
                 + player.getUniqueId().toString() + "' , '"
                 + player.getDisplayName() + "' , "
                 + 0 + " , "
