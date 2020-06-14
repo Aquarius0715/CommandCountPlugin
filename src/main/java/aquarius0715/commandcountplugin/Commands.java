@@ -98,6 +98,14 @@ public class Commands implements CommandExecutor {
 
                             plugin.timer.Timer();
 
+                            try {
+                                plugin.sqlUpdate.updateScore((Player) sender);
+                                plugin.sqlSelect.selectPlayerScoreRanking();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            plugin.scoreBoardData.updateScoreBoard();
+
 
                             sender.sendMessage("レイドが始まりました。");
                             return true;

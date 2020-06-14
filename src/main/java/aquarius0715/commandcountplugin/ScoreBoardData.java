@@ -20,7 +20,7 @@ public class ScoreBoardData {
 
         int count = 0;
         for (int i = 0; i < plugin.playerData.size(); i++) {
-            Score score = plugin.objective.getScore("1位 : " + plugin.playerData.get(count).playerName + " : " + plugin.playerData.get(count).score);
+            Score score = plugin.objective.getScore(count + 1 + "位 : " + plugin.playerData.get(count).playerName + " : " + plugin.playerData.get(count).score);
             score.setScore(9 - count);
             count++;
         }
