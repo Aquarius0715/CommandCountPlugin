@@ -18,10 +18,4 @@ public class DateFormant {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy'-'MM'-'dd' 'HH':'mm':'ss");
         plugin.StartDate = simpleDateFormat.format(date);
     }
-
-    public String FormFinishTime() {
-        Date date = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy'-'MM'-'dd' 'HH':'mm':'ss");
-        return simpleDateFormat.format(date);
-    }
 }

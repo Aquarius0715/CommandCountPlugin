@@ -6,9 +6,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public final class CommandCountPlugin extends JavaPlugin {
@@ -21,17 +19,6 @@ public final class CommandCountPlugin extends JavaPlugin {
     Scoreboard scoreboard;
     Objective objective;
 
-    Team first;
-    Team second;
-    Team third;
-    Team fourth;
-    Team fifth;
-    Team sixth;
-    Team seventh;
-    Team eighth;
-    Team ninth;
-    Team tenth;
-
     ScoreBoard scoreBoard = new ScoreBoard(this);
     ScoreBoardData scoreBoardData = new ScoreBoardData(this);
     SQLInsert sqlInsert = new SQLInsert(this);
@@ -39,22 +26,23 @@ public final class CommandCountPlugin extends JavaPlugin {
     SQLSelect sqlSelect = new SQLSelect(this);
     SQLUpdate sqlUpdate = new SQLUpdate(this);
     DateFormant dateFormant = new DateFormant(this);
+    Timer timer = new Timer(this);
 
-    String[] rankingDisplayName = new String[10];
 
-
-    int[] rankingScore = new int[10];
+    ArrayList<String> playerName = new ArrayList<String>(10);
+    ArrayList<Integer> score = new ArrayList<Integer>(10);
+    ArrayList<Team> team = new ArrayList<Team>(10);
 
     String StartDate;
 
-    Map<String, Integer> ScoreBoardNumber = new HashMap<String, Integer>();
+    int time = 0;
 
-    Date finishDate;
 
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
         Objects.requireNonNull(getCommand("cmdcount")).setExecutor(new Commands(this));
+
         MySQLManager = new MySQLManager(this, "CommandCountPlugin");
 
 

@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 public class SQLSelect {
 
+
     CommandCountPlugin plugin;
 
     public SQLSelect(CommandCountPlugin plugin) {
@@ -68,23 +69,25 @@ public class SQLSelect {
 
         requireNonNull(resultSet).next();
 
-        plugin.scoreBoardData.addScoreBoard();
+        plugin.scoreBoardData.updateScoreBoard();
     }
 
     public void selectPlayerScoreRanking() throws SQLException {
         if (!sqlConnectSafely()) {
             return;
         }
-        selectScore(1);
-        selectScore(2);
-        selectScore(3);
-        selectScore(4);
-        selectScore(5);
-        selectScore(6);
-        selectScore(7);
-        selectScore(8);
-        selectScore(9);
-        selectScore(10);
+
+        String sql = "SELECT * from commandCountTable where StartDate = '" + plugin.StartDate + "' ORDER BY cmdCount DESC LIMIT 10";
+
+        ResultSet resultSet = plugin.MySQLManager.query(sql);
+        resultSet.next();
+
+        plugin.score.clear();
+        plugin.playerName.clear();
+
+        plugin.score.add(resultSet.getInt("cmdCount"));
+        plugin.playerName.add(resultSet.getString("playerName"));
+
     }
 
     public boolean sqlConnectSafely() {
@@ -102,8 +105,8 @@ public class SQLSelect {
             ResultSet resultSet = plugin.MySQLManager.query(sql);
 
             resultSet.next();
-            plugin.rankingScore[joinPlayers - 1] = resultSet.getInt("cmdCount");
-            plugin.rankingDisplayName[joinPlayers - 1] = resultSet.getString("playerName");
+            plugin.score.add(resultSet.getInt("cmdCount"));
+            plugin.playerName.add(resultSet.getString("playerName"));
         }
     }
 }

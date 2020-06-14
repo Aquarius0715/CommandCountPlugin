@@ -90,18 +90,19 @@ public class Commands implements CommandExecutor {
 
                             plugin.dateFormant.FormStartTime();
 
-                            for (Player player1 : Bukkit.getOnlinePlayers()) {
-                                plugin.sqlInsert.insertDefaultTable(player1);
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                plugin.sqlInsert.insertDefaultTable(player);
                             }
 
                             try {
                                 plugin.scoreBoard.createScoreBoard();
+                                plugin.scoreBoard.updateScoreBoardTime();
+
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
+                            plugin.timer.Timer();
 
-                            plugin.scoreBoard.Timer();
-                            plugin.scoreBoard.updateTime();
 
                             sender.sendMessage("レイドが始まりました。");
                             return true;
@@ -140,9 +141,11 @@ public class Commands implements CommandExecutor {
                     }
                     try {
                         plugin.sqlUpdate.updateScore(player);
+                        plugin.sqlSelect.selectPlayerScoreRanking();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
+                    plugin.scoreBoardData.updateScoreBoard();
                     return true;
                 }
             }

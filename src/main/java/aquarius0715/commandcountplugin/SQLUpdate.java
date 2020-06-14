@@ -70,7 +70,6 @@ public class SQLUpdate {
         player.sendMessage(ChatColor.GRAY + "スコアが1増えました。");
     }
 
-
     public boolean sqlConnectSafely() {
         if (!plugin.MySQLManager.connectCheck()) {
             Bukkit.broadcastMessage("DB接続に失敗したためプラグインを停止します。");

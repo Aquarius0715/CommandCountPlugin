@@ -1,5 +1,13 @@
-updateTime: 100
+####################
+#CommandCountPlugin#
+####################
+
+# 何Tickおきにスコアボードを更新するかを設定します。
+updateTime: 1200
+# レイドを何秒間行うのかを設定します。
 countTime: 10
+
+# mysqlの設定
 mysql:
   host: localhost
   port: 3306
