@@ -46,8 +46,7 @@ public class Timer {
                         player.setScoreboard(requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard());
                         plugin.StartDate = null;
                         plugin.gameStats = false;
-                        plugin.playerName.clear();
-                        plugin.score.clear();
+                        plugin.playerData.clear();
                         plugin.time = 0;
                         cancel();
                     }

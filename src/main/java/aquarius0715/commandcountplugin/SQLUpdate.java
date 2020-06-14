@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class SQLUpdate {
 
@@ -57,7 +58,7 @@ public class SQLUpdate {
             player.sendMessage("途中から参加しました。");
             plugin.sqlInsert.insertDefaultTable(player);
         }
-        resultSet.next();
+        Objects.requireNonNull(resultSet).next();
         int score = resultSet.getInt("cmdCount") + 1;
 
         String sql1 = "UPDATE commandCountTable set cmdCount = "

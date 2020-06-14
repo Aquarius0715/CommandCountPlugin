@@ -94,13 +94,8 @@ public class Commands implements CommandExecutor {
                                 plugin.sqlInsert.insertDefaultTable(player);
                             }
 
-                            try {
-                                plugin.scoreBoard.createScoreBoard();
-                                plugin.scoreBoard.updateScoreBoardTime();
+                            plugin.scoreBoard.createScoreBoard();
 
-                            } catch (SQLException e) {
-                                e.printStackTrace();
-                            }
                             plugin.timer.Timer();
 
 
@@ -122,9 +117,11 @@ public class Commands implements CommandExecutor {
                 }
                 try {
                     plugin.sqlSelect.selectScoreBoardStats(((Player) sender).getPlayer());
+                    plugin.sqlSelect.selectPlayerScoreRanking();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                plugin.scoreBoardData.updateScoreBoard();
 
                 return true;
             }

@@ -3,8 +3,10 @@ package aquarius0715.commandcountplugin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Score;
 
 public class ScoreBoardData {
+
 
     CommandCountPlugin plugin;
 
@@ -14,11 +16,12 @@ public class ScoreBoardData {
 
     public void updateScoreBoard() {
 
+        plugin.scoreBoard.createScoreBoard();
+
         int count = 0;
-        for (int i = 0; i < plugin.playerName.size(); i++) {
-            plugin.team.get(count).addEntry(count + 1 + "位");
-            plugin.team.get(count).setSuffix(plugin.playerName.get(count) + " : " + "スコア" + plugin.score.get(count));
-            plugin.objective.getScore(count + 1 + "位").setScore(9 - count);
+        for (int i = 0; i < plugin.playerData.size(); i++) {
+            Score score = plugin.objective.getScore("1位 : " + plugin.playerData.get(count).playerName + " : " + plugin.playerData.get(count).score);
+            score.setScore(9 - count);
             count++;
         }
 

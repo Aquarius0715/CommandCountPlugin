@@ -1,4 +1,3 @@
-aquarius0715\commandcountplugin\ScoreBoard$1.class
 aquarius0715\commandcountplugin\ScoreBoardData.class
 aquarius0715\commandcountplugin\SQLInsert.class
 aquarius0715\commandcountplugin\DateFormant.class
@@ -10,4 +9,5 @@ aquarius0715\commandcountplugin\SQLSelect.class
 aquarius0715\commandcountplugin\SQLUpdate.class
 aquarius0715\commandcountplugin\MySQLManager.class
 aquarius0715\commandcountplugin\CommandCountPlugin.class
+aquarius0715\commandcountplugin\CommandCountPlugin$PlayerData.class
 aquarius0715\commandcountplugin\ScoreBoard.class

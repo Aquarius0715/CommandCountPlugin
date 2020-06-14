@@ -49,29 +49,6 @@ public class SQLSelect {
         }
     }
 
-    public void selectPlayerScore(Player player) throws SQLException {
-        if (!sqlConnectSafely()) {
-            return;
-        }
-
-        String sql = "SELECT cmdCount FROM commandCountTable WHERE UUID = '" + player.getUniqueId().toString() + "' AND StartDate = '"
-                + plugin.StartDate + "';";
-        ResultSet resultSet = plugin.MySQLManager.query(sql);
-
-        if (resultSet == null) {
-            if (!plugin.joinOnTheWay) {
-                player.sendMessage("途中参加は許可されていません。");
-                return;
-            }
-            player.sendMessage("途中から参加しました。");
-            plugin.sqlInsert.insertDefaultTable(player);
-        }
-
-        requireNonNull(resultSet).next();
-
-        plugin.scoreBoardData.updateScoreBoard();
-    }
-
     public void selectPlayerScoreRanking() throws SQLException {
         if (!sqlConnectSafely()) {
             return;
@@ -80,14 +57,14 @@ public class SQLSelect {
         String sql = "SELECT * from commandCountTable where StartDate = '" + plugin.StartDate + "' ORDER BY cmdCount DESC LIMIT 10";
 
         ResultSet resultSet = plugin.MySQLManager.query(sql);
-        resultSet.next();
 
-        plugin.score.clear();
-        plugin.playerName.clear();
+        plugin.playerData.clear();
 
-        plugin.score.add(resultSet.getInt("cmdCount"));
-        plugin.playerName.add(resultSet.getString("playerName"));
-
+        while (resultSet.next()) {
+            plugin.pd.playerName = resultSet.getString("playerName");
+            plugin.pd.score = resultSet.getInt("cmdCount");
+            plugin.playerData.add(plugin.pd);
+        }
     }
 
     public boolean sqlConnectSafely() {
@@ -97,16 +74,5 @@ public class SQLSelect {
             return false;
         }
         return true;
-    }
-
-    public void selectScore(int joinPlayers) throws SQLException {
-        if (Bukkit.getOnlinePlayers().size() >= joinPlayers) {
-            String sql = "SELECT * from commandCountTable where StartDate = '" + plugin.StartDate + "' ORDER BY cmdCount DESC LIMIT 10 OFFSET " + (joinPlayers - 1) + ";";
-            ResultSet resultSet = plugin.MySQLManager.query(sql);
-
-            resultSet.next();
-            plugin.score.add(resultSet.getInt("cmdCount"));
-            plugin.playerName.add(resultSet.getString("playerName"));
-        }
     }
 }

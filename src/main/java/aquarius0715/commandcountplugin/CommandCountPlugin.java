@@ -4,12 +4,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class CommandCountPlugin extends JavaPlugin {
+
+    PlayerData pd = new PlayerData();
+    List<PlayerData> playerData = new ArrayList<PlayerData>(10);
+
+    class PlayerData {
+        String playerName;
+        int score;
+    }
 
     boolean pluginStats = true;
     boolean gameStats = false;
@@ -27,11 +35,6 @@ public final class CommandCountPlugin extends JavaPlugin {
     SQLUpdate sqlUpdate = new SQLUpdate(this);
     DateFormant dateFormant = new DateFormant(this);
     Timer timer = new Timer(this);
-
-
-    ArrayList<String> playerName = new ArrayList<String>(10);
-    ArrayList<Integer> score = new ArrayList<Integer>(10);
-    ArrayList<Team> team = new ArrayList<Team>(10);
 
     String StartDate;
 
