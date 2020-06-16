@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public class SQLSelect {
+public class SQLSelect extends Thread {
 
 
     CommandCountPlugin plugin;
@@ -54,17 +54,22 @@ public class SQLSelect {
             return;
         }
 
-        String sql = "SELECT * from commandCountTable where StartDate = '" + plugin.StartDate + "' ORDER BY cmdCount DESC LIMIT 10";
+        String sql = "SELECT * from commandCountTable where StartDate = '" + plugin.StartDate + "' ORDER BY cmdCount DESC LIMIT 10;";
 
         ResultSet resultSet = plugin.MySQLManager.query(sql);
+
 
         plugin.playerData.clear();
 
         while (resultSet.next()) {
-            plugin.pd.playerName = resultSet.getString("playerName");
-            plugin.pd.score = resultSet.getInt("cmdCount");
-            plugin.playerData.add(plugin.pd);
+            plugin.playerData.add(new CommandCountPlugin.PlayerData(resultSet.getString("playerName"), resultSet.getInt("cmdCount")));
         }
+
+        String sql1 = "SELECT SUM(cmdCount) from commandCountTable where StartDate = '" + plugin.StartDate + "';";
+        ResultSet resultSet1 = plugin.MySQLManager.query(sql1);
+        resultSet1.next();
+
+        plugin.allScore = resultSet1.getInt("SUM(cmdCount)");
     }
 
     public boolean sqlConnectSafely() {

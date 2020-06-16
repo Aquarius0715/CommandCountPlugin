@@ -3,7 +3,7 @@ package aquarius0715.commandcountplugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class SQLInsert {
+public class SQLInsert extends Thread {
 
     CommandCountPlugin plugin;
 

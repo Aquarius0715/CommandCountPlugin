@@ -6,9 +6,8 @@ import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 
-public class SQLUpdate {
+public class SQLUpdate extends Thread {
 
     CommandCountPlugin plugin;
 
@@ -50,25 +49,27 @@ public class SQLUpdate {
                 + player.getUniqueId().toString() + "';";
         ResultSet resultSet = plugin.MySQLManager.query(sql);
 
-        if (resultSet == null) {
-            if (!plugin.joinOnTheWay) {
-                player.sendMessage("途中参加は許可されていません。");
-                return;
+        if (resultSet.next()) {
+            if (resultSet.getObject("cmdCount") != null && resultSet.wasNull()) {
+                if (!plugin.joinOnTheWay) {
+                    player.sendMessage("途中参加は許可されていません。");
+                    return;
+                }
+                player.sendMessage("途中から参加しました。");
+                plugin.sqlInsert.insertDefaultTable(player);
             }
-            player.sendMessage("途中から参加しました。");
-            plugin.sqlInsert.insertDefaultTable(player);
-        }
-        Objects.requireNonNull(resultSet).next();
-        int score = resultSet.getInt("cmdCount") + 1;
 
-        String sql1 = "UPDATE commandCountTable set cmdCount = "
-                + score
-                + " WHERE StartDate = '"
-                + plugin.StartDate
-                + "' AND UUID = '"
-                + player.getUniqueId().toString() + "';";
-        plugin.MySQLManager.execute(sql1);
-        player.sendMessage(ChatColor.GRAY + "スコアが1増えました。");
+            int score = resultSet.getInt("cmdCount") + 1;
+
+            String sql1 = "UPDATE commandCountTable set cmdCount = "
+                    + score
+                    + " WHERE StartDate = '"
+                    + plugin.StartDate
+                    + "' AND UUID = '"
+                    + player.getUniqueId().toString() + "';";
+            plugin.MySQLManager.execute(sql1);
+            player.sendMessage(ChatColor.GRAY + "スコアが1増えました。");
+        }
     }
 
     public boolean sqlConnectSafely() {

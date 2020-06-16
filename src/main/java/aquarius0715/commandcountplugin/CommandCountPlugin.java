@@ -11,13 +11,9 @@ import java.util.Objects;
 
 public final class CommandCountPlugin extends JavaPlugin {
 
-    PlayerData pd = new PlayerData();
     List<PlayerData> playerData = new ArrayList<PlayerData>(10);
 
-    class PlayerData {
-        String playerName;
-        int score;
-    }
+    int allScore;
 
     boolean pluginStats = true;
     boolean gameStats = false;
@@ -40,15 +36,26 @@ public final class CommandCountPlugin extends JavaPlugin {
 
     int time = 0;
 
-
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
         Objects.requireNonNull(getCommand("cmdcount")).setExecutor(new Commands(this));
+        this.getServer().getPluginManager().registerEvents(new Events(this), this);
 
         MySQLManager = new MySQLManager(this, "CommandCountPlugin");
 
 
+    }
+
+    static class PlayerData {
+
+        String playerName;
+        int score;
+
+        public PlayerData(String playerName, int score) {
+            this.playerName = playerName;
+            this.score = score;
+        }
     }
 
     @Override

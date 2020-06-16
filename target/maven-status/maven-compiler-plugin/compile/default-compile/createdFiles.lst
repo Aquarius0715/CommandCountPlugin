@@ -2,6 +2,7 @@ aquarius0715\commandcountplugin\ScoreBoardData.class
 aquarius0715\commandcountplugin\SQLInsert.class
 aquarius0715\commandcountplugin\DateFormant.class
 aquarius0715\commandcountplugin\Timer.class
+aquarius0715\commandcountplugin\Events.class
 aquarius0715\commandcountplugin\Timer$1.class
 aquarius0715\commandcountplugin\MySQLFunc.class
 aquarius0715\commandcountplugin\Commands.class

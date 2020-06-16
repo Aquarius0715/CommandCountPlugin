@@ -17,6 +17,8 @@ public class ScoreBoardData {
     public void updateScoreBoard() {
 
         plugin.scoreBoard.createScoreBoard();
+        Score score1 = plugin.objective.getScore("全体のスコア : " + plugin.allScore);
+        score1.setScore(10);
 
         int count = 0;
         for (int i = 0; i < plugin.playerData.size(); i++) {
@@ -24,6 +26,7 @@ public class ScoreBoardData {
             score.setScore(9 - count);
             count++;
         }
+
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.setScoreboard(plugin.scoreboard);
