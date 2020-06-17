@@ -12,19 +12,24 @@ public class SQLInsert extends Thread {
     }
 
     public void insertDefaultTable(Player player) {
-        if (!sqlConnectSafely()) {
-            return;
-        }
-        String sql = "INSERT INTO commandCountTable (StartDate, UUID, playerName, cmdCount, scoreBoardStats) VALUE(" + "'"
-                + plugin.StartDate + "' , '"
-                + player.getUniqueId().toString() + "' , '"
-                + player.getDisplayName() + "' , "
-                + 0 + " , "
-                + true + ");";
-        plugin.MySQLManager.execute(sql);
-    }
 
+        Bukkit.getScheduler().runTask(plugin, this);
+        {
+
+            if (!sqlConnectSafely()) {
+                return;
+            }
+            String sql = "INSERT INTO commandCountTable (StartDate, UUID, playerName, cmdCount, scoreBoardStats) VALUE(" + "'"
+                    + plugin.StartDate + "' , '"
+                    + player.getUniqueId().toString() + "' , '"
+                    + player.getDisplayName() + "' , "
+                    + 0 + " , "
+                    + true + ");";
+            plugin.MySQLManager.execute(sql);
+        }
+    }
     public boolean sqlConnectSafely() {
+
         if (!plugin.MySQLManager.connectCheck()) {
             Bukkit.broadcastMessage("DB接続に失敗したためプラグインを停止します。");
             plugin.pluginStats = false;

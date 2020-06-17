@@ -119,16 +119,14 @@ public class Commands implements CommandExecutor {
                 } else {
                     if (!plugin.gameStats) {
                         sender.sendMessage("レイドはまだ始まっていません。");
+                        return false;
                     }
                 }
                 try {
                     plugin.sqlSelect.selectScoreBoardStats(((Player) sender).getPlayer());
-                    plugin.sqlSelect.selectPlayerScoreRanking();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
-                plugin.scoreBoardData.updateScoreBoard();
 
                 return true;
             }

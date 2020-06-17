@@ -16,48 +16,59 @@ public class SQLUpdate extends Thread {
     }
 
     public void updateScoreBoardStatsFalse(Player player) {
-        if (!sqlConnectSafely()) {
-            return;
+
+        Bukkit.getScheduler().runTask(plugin, this);
+        {
+
+            if (!sqlConnectSafely()) {
+                return;
+            }
+            String sql = "update commandCountTable set scoreBoardStats = false " +
+                    "WHERE StartDate = '"
+                    + plugin.StartDate
+                    + "' AND UUID = '"
+                    + player.getUniqueId().toString() + "';";
+            plugin.MySQLManager.execute(sql);
         }
-        String sql = "update commandCountTable set scoreBoardStats = false " +
-                "WHERE StartDate = '"
-                + plugin.StartDate
-                + "' AND UUID = '"
-                + player.getUniqueId().toString() + "';";
-        plugin.MySQLManager.execute(sql);
     }
 
     public void updateScoreBoardTrue(Player player) {
-        if (!sqlConnectSafely()) {
-            return;
+
+        Bukkit.getScheduler().runTask(plugin, this);
+        {
+
+            if (!sqlConnectSafely()) {
+                return;
+            }
+            String sql = "update commandCountTable set scoreBoardStats = true " +
+                    "WHERE StartDate = '"
+                    + plugin.StartDate
+                    + "' AND UUID = '"
+                    + player.getUniqueId().toString() + "';";
+            plugin.MySQLManager.execute(sql);
         }
-        String sql = "update commandCountTable set scoreBoardStats = true " +
-                "WHERE StartDate = '"
-                + plugin.StartDate
-                + "' AND UUID = '"
-                + player.getUniqueId().toString() + "';";
-        plugin.MySQLManager.execute(sql);
     }
 
     public void updateScore(Player player) throws SQLException {
-        if (!sqlConnectSafely()) {
-            return;
-        }
 
-        String sql = "SELECT cmdCount FROM commandCountTable WHERE StartDate = '"
-                + plugin.StartDate + "' AND UUID = '"
-                + player.getUniqueId().toString() + "';";
-        ResultSet resultSet = plugin.MySQLManager.query(sql);
+        Bukkit.getScheduler().runTask(plugin, this);
+        {
 
-        if (resultSet.next()) {
-            if (resultSet.getObject("cmdCount") != null && resultSet.wasNull()) {
-                if (!plugin.joinOnTheWay) {
-                    player.sendMessage("途中参加は許可されていません。");
-                    return;
-                }
-                player.sendMessage("途中から参加しました。");
-                plugin.sqlInsert.insertDefaultTable(player);
+            if (!sqlConnectSafely()) {
+                return;
             }
+
+            if (!plugin.joinOnTheWay) {
+                player.sendMessage("途中参加は許可されていません。");
+                return;
+            }
+
+            String sql = "SELECT cmdCount FROM commandCountTable WHERE StartDate = '"
+                    + plugin.StartDate + "' AND UUID = '"
+                    + player.getUniqueId().toString() + "';";
+            ResultSet resultSet = plugin.MySQLManager.query(sql);
+
+            resultSet.next();
 
             int score = resultSet.getInt("cmdCount") + 1;
 
@@ -70,7 +81,7 @@ public class SQLUpdate extends Thread {
             plugin.MySQLManager.execute(sql1);
             player.sendMessage(ChatColor.GRAY + "スコアが1増えました。");
         }
-    }
+        }
 
     public boolean sqlConnectSafely() {
         if (!plugin.MySQLManager.connectCheck()) {

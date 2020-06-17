@@ -48,6 +48,7 @@ public class Timer {
                         plugin.gameStats = false;
                         plugin.playerData.clear();
                         plugin.time = 0;
+
                         cancel();
                     }
                 }

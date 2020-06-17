@@ -43,6 +43,13 @@ public class MySQLManager {
         if (!this.connected) {
             plugin.getLogger().info("Unable to establish a MySQL connection.");
         }
+
+        execute("create table if not exists commandCountTable(Id int auto_increment not null primary key," +
+                "StartDate VARCHAR(19)," +
+                "UUID VARCHAR(36)," +
+                "playerName VARCHAR(16)," +
+                "cmdCount INT," +
+                "scoreBoardStats BOOLEAN);");
     }
 
     /////////////////////////////////
