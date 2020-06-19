@@ -28,8 +28,16 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     sender.sendMessage("プラグインが無効になっています")
                     false
                 } else {
-                    sender.sendMessage("cmdCounter")
-                    //TODO Write help text
+                    sender.sendMessage("</cmdcount start> : レイドをスタートします。")
+                    sender.sendMessage("</cmdcount add> : スコアを1加えます。")
+                    sender.sendMessage("</cmdcount scoreboard> : スコアボードの表示・非表示を設定します。")
+                    sender.sendMessage("</cmdcount help> : この画面を表示します。")
+                    if (sender.hasPermission("admin")) {
+                        sender.sendMessage("</cmdcount reset> : スコアをリセットします。")
+                        sender.sendMessage("</cmdcount on> : プラグインをオンにします。")
+                        sender.sendMessage("</cmdcount off> : プラグインをオフにします。")
+                        sender.sendMessage("</cmdcount addop [数]> : 指定されたスコアに設定します。")
+                    }
                     true
                 }
             }
