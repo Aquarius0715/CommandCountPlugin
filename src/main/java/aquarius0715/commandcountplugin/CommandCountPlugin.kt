@@ -25,6 +25,7 @@ class CommandCountPlugin : JavaPlugin() {
     var timer = Timer(this)
     var StartDate: String? = null
     var time = 0
+    var addScoreOp = 0
     override fun onEnable() {
         saveDefaultConfig()
         Objects.requireNonNull(getCommand("cmdcount"))!!.setExecutor(Commands(this))

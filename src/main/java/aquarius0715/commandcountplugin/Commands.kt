@@ -14,7 +14,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                 sender.sendMessage("You cannot this")
                 return true
             }
-            if (args.size == 0) {
+            if (args.isEmpty()) {
                 if (plugin.pluginStats) {
                     sender.sendMessage("CommandCountPluginは有効です。")
                     return true
@@ -124,6 +124,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     true
                 }
             }
+
             if (args[0].equals("on", ignoreCase = true)) {
                 if (!plugin.pluginStats) {
                     plugin.pluginStats = true
@@ -131,6 +132,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     return true
                 } else sender.sendMessage("プラグインはすでに有効です。")
             }
+
             if (args[0].equals("off", ignoreCase = true)) {
                 if (!plugin.pluginStats) {
                     plugin.pluginStats = false
@@ -138,6 +140,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     return true
                 } else sender.sendMessage("プラグインはすでに無効です。")
             }
+
             if (args[0].equals("joinsettings", ignoreCase = true)) {
                 if (!sender.hasPermission("admin")) {
                     sender.sendMessage("あなたはこのコマンドを使用することができません。")
@@ -155,6 +158,33 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                 plugin.joinOnTheWay = true
                 return true
             }
+        }
+
+        if (args.size == 2) {
+            if (args[0].equals("addop", ignoreCase = true)) {
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    return false
+                }
+                if (!plugin.pluginStats) {
+                    sender.sendMessage("プラグインは無効になっています。")
+                    return false
+                }
+                if (!plugin.gameStats) {
+                    sender.sendMessage("レイドはまだ始まっていません。")
+                    return false
+                } else {
+                    try {
+                        plugin.addScoreOp = args[1].toInt()
+                    } catch (e: NumberFormatException) {
+                        sender.sendMessage("設定する数を入力してください。")
+                        return false
+                    }
+                    plugin.sqlUpdate.updateScoreAdmin(sender as Player, plugin.addScoreOp)
+                    return true
+                }
+            }
+
         }
         return false
     }

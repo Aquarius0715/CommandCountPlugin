@@ -36,7 +36,6 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
         }
     }
 
-    //未実装
     @Throws(SQLException::class)
     fun updateScore(player: Player) {
         Bukkit.getScheduler().runTask(plugin, this)
@@ -65,13 +64,39 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
         }
     }
 
+    fun updateScoreAdmin(player: Player, score: Int) {
+        Bukkit.getScheduler().runTask(plugin, this)
+
+        run {
+            if (!sqlConnectSafely()) {
+                return
+            }
+            if (!plugin.joinOnTheWay) {
+                player.sendMessage("途中参加は許可されていません。")
+                return
+            }
+
+            val sql1 = ("UPDATE commandCountTable set cmdCount = "
+                    + plugin.addScoreOp
+                    + " WHERE StartDate = '"
+                    + plugin.StartDate
+                    + "' AND UUID = '"
+                    + player.uniqueId.toString() + "';")
+            plugin.MySQLManager.execute(sql1)
+            player.sendMessage(ChatColor.GRAY.toString() + "スコアを" + score + "に設定しました。")
+        }
+
+    }
+
     fun resetScore() {
+        Bukkit.getScheduler().runTask(plugin, this)
         if (!sqlConnectSafely()) {
             return
         }
-        val sql = "UPDATE commandCountTable SET cmdCount = 0 WHERE StartDate = '';"
+        val sql = "UPDATE commandCountTable SET cmdCount = 0 WHERE StartDate = '" + plugin.StartDate + "';"
         plugin.MySQLManager.execute(sql)
         plugin.playerData.clear()
+        plugin.allScore = 0
         plugin.scoreBoardData.updateScoreBoard()
     }
 
