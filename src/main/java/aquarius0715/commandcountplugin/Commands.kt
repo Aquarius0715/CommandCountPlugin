@@ -44,7 +44,6 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                 }
             }
 
-            //未実装
             if (args[0].equals("reset", ignoreCase = true)) {
                 return if (!plugin.pluginStats) {
                     sender.sendMessage("プラグインが無効になっています")
@@ -220,6 +219,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         return false
                     }
                     plugin.sqlUpdate.updateScoreAdmin(sender as Player, plugin.addScoreOp)
+                    plugin.scoreBoardData.updateScoreBoard()
                     return true
                 }
             }
