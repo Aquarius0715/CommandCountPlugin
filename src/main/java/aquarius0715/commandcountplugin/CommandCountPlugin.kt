@@ -11,7 +11,7 @@ class CommandCountPlugin : JavaPlugin() {
     var allScore = 0
     var pluginStats = true
     var gameStats = false
-    var joinOnTheWay = true
+    var joinOnTheWay = false
     var scoreboardManager: ScoreboardManager? = null
     var scoreboard: Scoreboard? = null
     var objective: Objective? = null
