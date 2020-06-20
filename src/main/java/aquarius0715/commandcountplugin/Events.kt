@@ -9,6 +9,7 @@ class Events(var plugin: CommandCountPlugin) : Listener {
     fun onJoin(event: PlayerJoinEvent) {
         if (plugin.pluginStats && !plugin.joinOnTheWay) {
             event.player.sendMessage("只今レイドが行われています。")
+            plugin.scoreBoardData.updateScoreBoard()
             event.player.scoreboard = plugin.scoreboard!!
         }
     }

@@ -84,6 +84,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
                     + player.uniqueId.toString() + "';")
             plugin.MySQLManager.execute(sql1)
             player.sendMessage(ChatColor.GRAY.toString() + "スコアを" + score + "に設定しました。")
+            plugin.scoreBoardData.updateScoreBoard()
         }
 
     }

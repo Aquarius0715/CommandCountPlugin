@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.sql.SQLException
+import java.util.*
 
 class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
@@ -28,15 +29,16 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     sender.sendMessage("プラグインが無効になっています")
                     false
                 } else {
-                    sender.sendMessage("</cmdcount start> : レイドをスタートします。")
-                    sender.sendMessage("</cmdcount add> : スコアを1加えます。")
                     sender.sendMessage("</cmdcount scoreboard> : スコアボードの表示・非表示を設定します。")
                     sender.sendMessage("</cmdcount help> : この画面を表示します。")
                     if (sender.hasPermission("admin")) {
                         sender.sendMessage("</cmdcount reset> : スコアをリセットします。")
                         sender.sendMessage("</cmdcount on> : プラグインをオンにします。")
                         sender.sendMessage("</cmdcount off> : プラグインをオフにします。")
-                        sender.sendMessage("</cmdcount addop [数]> : 指定されたスコアに設定します。")
+                        sender.sendMessage("</cmdcount setscore [数]> : 指定されたスコアに設定します。")
+                        sender.sendMessage("</cmdcount start> : レイドをスタートします。")
+                        sender.sendMessage("</cmdcount settime [数]> : 制限時間を指定された秒数に設定します。")
+                        sender.sendMessage("</cmdcount add> : スコアを1加えます。")
                     }
                     true
                 }
@@ -95,6 +97,35 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     }
                 }
             }
+
+            if (args[0].equals("stop", ignoreCase = true)) {
+                return if (!plugin.pluginStats) {
+                    sender.sendMessage("プラグインが無効になっています。")
+                    false
+                } else {
+                    if (!plugin.gameStats) {
+                        sender.sendMessage("レイドは既に停止しています。")
+                        false
+                    } else {
+                        if (!sender.hasPermission("admin")) {
+                            sender.sendMessage("あなたはこのコマンドを使用することができません")
+                            false
+                        } else {
+                            for (player in Bukkit.getOnlinePlayers()) {
+                                player.sendMessage("レイドが強制終了しました。")
+                                player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
+                                plugin.StartDate = null
+                                plugin.gameStats = false
+                                plugin.playerData.clear()
+                                plugin.time = 0
+                            }
+                            true
+                        }
+                    }
+                }
+            }
+
+
             if (args[0].equals("scoreboard", ignoreCase = true)) {
                 if (!plugin.pluginStats) {
                     sender.sendMessage("プラグインが無効になっています。")
@@ -169,7 +200,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
         }
 
         if (args.size == 2) {
-            if (args[0].equals("addop", ignoreCase = true)) {
+            if (args[0].equals("setscore", ignoreCase = true)) {
                 if (!sender.hasPermission("admin")) {
                     sender.sendMessage("あなたはこのコマンドを使用することができません。")
                     return false
@@ -193,8 +224,29 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                 }
             }
 
+            if (args[0].equals("settime", ignoreCase = true)) {
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    return false
+                }
+                if (!plugin.pluginStats) {
+                    sender.sendMessage("プラグインが無効になっています。")
+                    return false
+                } else {
+                    try {
+                        args[1].toInt()
+                    } catch (e: java.lang.NumberFormatException) {
+                        sender.sendMessage("設定する数を入力してください。")
+                        return false
+                    }
+                    plugin.config.set("countTime", args[1].toInt())
+                    plugin.config.save("config.yml")
+                    sender.sendMessage("制限時間が" + args[1].toInt() + "秒に変更されました。")
+                    return true
+                }
+            }
+
         }
         return false
     }
-
 }

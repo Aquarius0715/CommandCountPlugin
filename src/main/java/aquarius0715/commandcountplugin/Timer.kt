@@ -5,12 +5,7 @@ import org.bukkit.ChatColor
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
-class Timer {
-    var plugin: CommandCountPlugin? = null
-
-    constructor(plugin: CommandCountPlugin?) {
-        this.plugin = plugin
-    }
+class Timer(var plugin: CommandCountPlugin?) {
 
     fun CountDown() {
         plugin!!.time = plugin!!.config.getInt("countTime")
