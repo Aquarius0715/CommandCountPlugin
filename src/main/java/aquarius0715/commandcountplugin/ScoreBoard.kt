@@ -11,7 +11,7 @@ class ScoreBoard(var plugin: CommandCountPlugin) {
         plugin.scoreboard = Objects.requireNonNull(plugin.scoreboardManager)!!.newScoreboard
         plugin.objective = plugin.scoreboard!!.registerNewObjective("cmdCount", "Dummy")
         plugin.objective!!.displaySlot = DisplaySlot.SIDEBAR
-        plugin.objective!!.displayName = ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "レイドスコアボード"
+        plugin.objective!!.displayName = plugin.prefix
         for (player1 in Bukkit.getOnlinePlayers()) {
             player1.scoreboard = plugin.scoreboard!!
         }

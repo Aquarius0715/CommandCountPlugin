@@ -12,33 +12,32 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (label.equals("cmdcount", ignoreCase = true)) {
             if (sender !is Player) {
-                sender.sendMessage("You cannot this")
+                sender.sendMessage(plugin.prefix + "You cannot this")
                 return true
             }
             if (args.isEmpty()) {
                 if (plugin.pluginStats) {
-                    sender.sendMessage("CommandCountPluginは有効です。")
+                    sender.sendMessage(plugin.prefix + "CommandCountPluginは有効です。")
                     return true
-                } else sender.sendMessage("CommandCountPluginは無効です")
+                } else sender.sendMessage(plugin.prefix + "CommandCountPluginは無効です")
                 return true
             }
         }
         if (args.size == 1) {
             if (args[0].equals("help", ignoreCase = true)) {
                 return if (!plugin.pluginStats) {
-                    sender.sendMessage("プラグインが無効になっています")
+                    sender.sendMessage(plugin.prefix + "プラグインが無効になっています")
                     false
                 } else {
-                    sender.sendMessage("</cmdcount scoreboard> : スコアボードの表示・非表示を設定します。")
                     if (sender.hasPermission("admin")) {
-                        sender.sendMessage("</cmdcount reset> : スコアをリセットします。")
-                        sender.sendMessage("</cmdcount on> : プラグインをオンにします。")
-                        sender.sendMessage("</cmdcount off> : プラグインをオフにします。")
-                        sender.sendMessage("</cmdcount setscore [数]> : 指定されたスコアに設定します。")
-                        sender.sendMessage("</cmdcount start> : レイドをスタートします。")
-                        sender.sendMessage("</cmdcount stop> : レイドを途中停止させます。")
-                        sender.sendMessage("</cmdcount settime [数]> : 制限時間を指定された秒数に設定します。")
-                        sender.sendMessage("</cmdcount add> : スコアを1加えます。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount reset> : スコアをリセットします。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount on> : プラグインをオンにします。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount off> : プラグインをオフにします。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount setscore [数]> : 指定されたスコアに設定します。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount start> : レイドをスタートします。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount stop> : レイドを途中停止させます。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount settime [日][時間][分]> : 制限時間を指定された時間に設定します。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount add> : スコアを1加えます。")
                     }
                     true
                 }
@@ -47,20 +46,20 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
             if (args[0].equals("reset", ignoreCase = true)) {
 
                 if (!sender.hasPermission("admin")) {
-                    sender.sendMessage("あなたはこのコマンドを使用することができません")
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません")
                     return false
                 }
 
                 return if (!plugin.pluginStats) {
-                    sender.sendMessage("プラグインが無効になっています")
+                    sender.sendMessage(plugin.prefix + "プラグインが無効になっています")
                     false
                 } else {
                     if (!plugin.gameStats) {
-                        sender.sendMessage("レイドはまだ始まっていません。")
+                        sender.sendMessage(plugin.prefix + "レイドはまだ始まっていません。")
                         false
                     } else {
                         plugin.sqlUpdate.resetScore()
-                            sender.sendMessage("リセットしました。")
+                            sender.sendMessage(plugin.prefix + "リセットしました。")
                             true
                         }
                     }
@@ -69,16 +68,16 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
             if (args[0].equals("start", ignoreCase = true)) {
 
                 if (!sender.hasPermission("admin")) {
-                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
                     return false
                 }
 
                 return if (!plugin.pluginStats) {
-                    sender.sendMessage("プラグインが無効になっています。")
+                    sender.sendMessage(plugin.prefix + "プラグインが無効になっています。")
                     false
                 } else {
                     if (plugin.gameStats) {
-                        sender.sendMessage("レイドは既に始まっています。")
+                        sender.sendMessage(plugin.prefix + "レイドは既に始まっています。")
                         false
                     } else {
                         plugin.gameStats = true
@@ -94,7 +93,8 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                             e.printStackTrace()
                         }
                         plugin.scoreBoardData.updateScoreBoard()
-                        sender.sendMessage("レイドが始まりました。")
+                        plugin.timer.scoreBoardUpdate()
+                        sender.sendMessage(plugin.prefix + "レイドが始まりました。")
                         true
                     }
                 }
@@ -104,21 +104,21 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
             if (args[0].equals("stop", ignoreCase = true)) {
 
                 if (!sender.hasPermission("admin")) {
-                    sender.sendMessage("あなたはこのコマンドを使用することができません")
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません")
                     return false
                 }
 
                 return if (!plugin.pluginStats) {
-                    sender.sendMessage("プラグインが無効になっています。")
+                    sender.sendMessage(plugin.prefix + "プラグインが無効になっています。")
                     false
                 } else {
                     if (!plugin.gameStats) {
-                        sender.sendMessage("レイドは既に停止しています。")
+                        sender.sendMessage(plugin.prefix + "レイドは既に停止しています。")
                         false
                     } else {
 
                             for (player in Bukkit.getOnlinePlayers()) {
-                                player.sendMessage("レイドが強制終了しました。")
+                                player.sendMessage(plugin.prefix + "レイドが強制終了しました。")
                                 player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
                                 plugin.StartDate = null
                                 plugin.gameStats = false
@@ -130,32 +130,14 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     }
                 }
 
-
-            if (args[0].equals("scoreboard", ignoreCase = true)) {
-                if (!plugin.pluginStats) {
-                    sender.sendMessage("プラグインが無効になっています。")
-                    return false
-                } else {
-                    if (!plugin.gameStats) {
-                        sender.sendMessage("レイドはまだ始まっていません。")
-                        return false
-                    }
-                }
-                try {
-                    plugin.sqlSelect.selectScoreBoardStats((sender as Player).player)
-                } catch (e: SQLException) {
-                    e.printStackTrace()
-                }
-                return true
-            }
             if (args[0].equals("add", ignoreCase = true)) {
                 val player = sender as Player
                 return if (!plugin.pluginStats) {
-                    sender.sendMessage("プラグインが無効になっています。")
+                    sender.sendMessage(plugin.prefix + "プラグインが無効になっています。")
                     false
                 } else {
                     if (!plugin.gameStats) {
-                        sender.sendMessage("レイドはまだ始まっていません。")
+                        sender.sendMessage(plugin.prefix + "レイドはまだ始まっていません。")
                         return false
                     }
                     try {
@@ -171,27 +153,27 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
             if (args[0].equals("on", ignoreCase = true)) {
 
                 if (!sender.hasPermission("admin")) {
-                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
                     return false
                 }
                 if (!plugin.pluginStats) {
                     plugin.pluginStats = true
-                    sender.sendMessage("プラグインを有効にしました。")
+                    sender.sendMessage(plugin.prefix + "プラグインを有効にしました。")
                     return true
-                } else sender.sendMessage("プラグインはすでに有効です。")
+                } else sender.sendMessage(plugin.prefix + "プラグインはすでに有効です。")
             }
 
             if (args[0].equals("off", ignoreCase = true)) {
                 if (!sender.hasPermission("admin")) {
-                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
                     return false
                 }
 
                 if (plugin.pluginStats) {
                     plugin.pluginStats = false
-                    sender.sendMessage("プラグインを無効にしました")
+                    sender.sendMessage(plugin.prefix + "プラグインを無効にしました")
                     return true
-                } else sender.sendMessage("プラグインはすでに無効です。")
+                } else sender.sendMessage(plugin.prefix + "プラグインはすでに無効です。")
             }
         }
 
@@ -199,21 +181,21 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
             if (args[0].equals("setscore", ignoreCase = true)) {
 
                 if (!sender.hasPermission("admin")) {
-                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
                     return false
                 }
                 if (!plugin.pluginStats) {
-                    sender.sendMessage("プラグインは無効になっています。")
+                    sender.sendMessage(plugin.prefix + "プラグインは無効になっています。")
                     return false
                 }
                 if (!plugin.gameStats) {
-                    sender.sendMessage("レイドはまだ始まっていません。")
+                    sender.sendMessage(plugin.prefix + "レイドはまだ始まっていません。")
                     return false
                 } else {
                     try {
                         plugin.addScoreOp = args[1].toInt()
                     } catch (e: NumberFormatException) {
-                        sender.sendMessage("設定する数を入力してください。")
+                        sender.sendMessage(plugin.prefix + " 設定する数を入力してください。")
                         return false
                     }
                     plugin.sqlUpdate.updateScoreAdmin(sender as Player, plugin.addScoreOp)
@@ -221,29 +203,38 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     return true
                 }
             }
+        }
+
+        if (args.size == 5) {
 
             if (args[0].equals("settime", ignoreCase = true)) {
                 if (!sender.hasPermission("admin")) {
-                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
                     return false
                 }
                 if (!plugin.pluginStats) {
-                    sender.sendMessage("プラグインが無効になっています。")
+                    sender.sendMessage(plugin.prefix + "プラグインが無効になっています。")
                     return false
                 } else {
                     try {
                         args[1].toInt()
+                        args[2].toInt()
+                        args[3].toInt()
                     } catch (e: java.lang.NumberFormatException) {
-                        sender.sendMessage("設定する数を入力してください。")
+                        sender.sendMessage(plugin.prefix + "設定する数を入力してください。")
                         return false
                     }
-                    plugin.config.set("countTime", args[1].toInt())
+                    plugin.config.set("days", args[1].toInt())
+                    plugin.config.set("hours", args[2].toInt())
+                    plugin.config.set("minutes", args[3].toInt())
                     plugin.config.save("config.yml")
-                    sender.sendMessage("制限時間が" + args[1].toInt() + "秒に変更されました。")
+                    sender.sendMessage(plugin.prefix + "レイド時間が"
+                            + args[1].toInt() + "日"
+                            + args[2].toInt() + "時間"
+                            + args[3].toInt() + "分に設定されました。")
                     return true
                 }
             }
-
         }
         return false
     }

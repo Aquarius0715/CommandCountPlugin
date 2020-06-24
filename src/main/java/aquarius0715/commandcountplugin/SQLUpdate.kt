@@ -6,35 +6,6 @@ import org.bukkit.entity.Player
 import java.sql.SQLException
 
 class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
-    fun updateScoreBoardStatsFalse(player: Player?) {
-        Bukkit.getScheduler().runTask(plugin, this)
-        run {
-            if (!sqlConnectSafely()) {
-                return
-            }
-            val sql = ("UPDATE commandCountTable SET scoreBoardStats = false " +
-                    "WHERE StartDate = '"
-                    + plugin.StartDate
-                    + "' AND UUID = '"
-                    + player!!.uniqueId.toString() + "';")
-            plugin.MySQLManager.execute(sql)
-        }
-    }
-
-    fun updateScoreBoardTrue(player: Player?) {
-        Bukkit.getScheduler().runTask(plugin, this)
-        run {
-            if (!sqlConnectSafely()) {
-                return
-            }
-            val sql = ("UPDATE commandCountTable SET scoreBoardStats = true " +
-                    "WHERE StartDate = '"
-                    + plugin.StartDate
-                    + "' AND UUID = '"
-                    + player!!.uniqueId.toString() + "';")
-            plugin.MySQLManager.execute(sql)
-        }
-    }
 
     @Throws(SQLException::class)
     fun updateScore(player: Player) {

@@ -25,6 +25,11 @@ class CommandCountPlugin : JavaPlugin() {
     var StartDate: String? = null
     var time = 0
     var addScoreOp = 0
+    var days = 0
+    var hours = 0
+    var minutes = 0
+    var seconds = 0
+    var prefix = "§l[§d§lM§f§la§a§ln§f§l10§b§lレイド§f§l]"
     override fun onEnable() {
         saveDefaultConfig()
         Objects.requireNonNull(getCommand("cmdcount"))!!.setExecutor(Commands(this))
