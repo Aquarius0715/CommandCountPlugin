@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.sql.SQLException
-import java.util.*
 
 class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
@@ -128,6 +127,9 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
 
             if (args[0].equals("add", ignoreCase = true)) {
                 val player = sender as Player
+
+
+
                 return if (!plugin.pluginStats) {
                     sender.sendMessage(plugin.prefix + "プラグインが無効になっています。")
                     false

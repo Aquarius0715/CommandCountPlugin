@@ -4,6 +4,7 @@ import aquarius0715.commandcountplugin.CommandCountPlugin.PlayerData
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.sql.SQLException
+import java.util.*
 
 class SQLSelect(var plugin: CommandCountPlugin) : Thread() {
 
@@ -53,8 +54,17 @@ class SQLSelect(var plugin: CommandCountPlugin) : Thread() {
     fun sqlConnectSafely(): Boolean {
         if (!plugin.MySQLManager.connectCheck()) {
             Bukkit.broadcastMessage(plugin.prefix + "DB接続に失敗したためプラグインを停止します。")
-            plugin.pluginStats = false
-            plugin.gameStats = false
+            for (player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage("レイドが終了しました。")
+                if (player.hasPermission("admin")) {
+                    plugin.sqlSelect.selectGameResult(player)
+                }
+                player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
+                plugin.StartDate = null
+                plugin.gameStats = false
+                plugin.playerData.clear()
+                plugin.time = -1
+            }
             return false
         }
         return true
