@@ -29,6 +29,9 @@ class Timer(var plugin: CommandCountPlugin?) {
                 } else {
                     for (player in Bukkit.getOnlinePlayers()) {
                         player.sendMessage("レイドが終了しました。")
+                        if (player.hasPermission("admin")) {
+                            plugin!!.sqlSelect.selectGameResult(player)
+                        }
                         player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
                         plugin!!.StartDate = null
                         plugin!!.gameStats = false

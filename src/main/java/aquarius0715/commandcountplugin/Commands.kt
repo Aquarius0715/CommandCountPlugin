@@ -187,7 +187,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     return false
                 }
 
-                if (!plugin.pluginStats) {
+                if (plugin.pluginStats) {
                     plugin.pluginStats = false
                     sender.sendMessage("プラグインを無効にしました")
                     return true
