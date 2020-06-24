@@ -33,24 +33,28 @@ class SQLSelect(var plugin: CommandCountPlugin) : Thread() {
         Bukkit.getScheduler().runTask(plugin, this)
         run {
             if (!sqlConnectSafely()) {
+                plugin.MySQLManager.close()
                 return
             }
-            player.sendMessage("データを確認しています...")
+            player.sendMessage(plugin.prefix + "データを確認しています...")
 
             val sql = "SELECT * FROM commandCountTable WHERE StartDate = '" + plugin.StartDate + "';"
             val resultSet = plugin.MySQLManager.query(sql)
             if (resultSet == null) {
-                player.sendMessage("データベースに情報が登録されていません、エラーが発生しました。")
+                player.sendMessage(plugin.prefix + "データベースに情報が登録されていません、エラーが発生しました。")
+                plugin.MySQLManager.close()
                 return
             }
-                player.sendMessage("データベースに情報が正常に登録されています。レイドを終了します。")
+                player.sendMessage(plugin.prefix + "データは正常に登録されています。レイドを終了します。")
+            plugin.MySQLManager.close()
         }
     }
 
     fun sqlConnectSafely(): Boolean {
         if (!plugin.MySQLManager.connectCheck()) {
-            Bukkit.broadcastMessage("DB接続に失敗したためプラグインを停止します。")
+            Bukkit.broadcastMessage(plugin.prefix + "DB接続に失敗したためプラグインを停止します。")
             plugin.pluginStats = false
+            plugin.gameStats = false
             return false
         }
         return true

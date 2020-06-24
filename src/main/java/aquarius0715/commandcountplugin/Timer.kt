@@ -37,7 +37,7 @@ class Timer(var plugin: CommandCountPlugin?) {
                             plugin!!.StartDate = null
                             plugin!!.gameStats = false
                             plugin!!.playerData.clear()
-                            plugin!!.time = 0
+                            plugin!!.time = -1
                             cancel()
                         }
                     }
@@ -55,7 +55,11 @@ class Timer(var plugin: CommandCountPlugin?) {
         object : BukkitRunnable() {
             override fun run() {
 
-                if (!plugin!!.gameStats || !plugin!!.pluginStats) {
+                if (!plugin!!.gameStats && plugin!!.time <= -1) {
+
+                    for (player in Bukkit.getOnlinePlayers()) {
+                        player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
+                    }
                     cancel()
                 }
 

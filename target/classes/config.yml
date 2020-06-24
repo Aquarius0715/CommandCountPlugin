@@ -12,10 +12,14 @@ minutes: 0
 # スコアボードの更新速度を秒単位で設定してください。
 updateTime: 10
 
+# スコアの設定
+# コマンドを実行した際の加算スコアの設定をします。
+addScore: 1
+
 # mysqlの設定
 mysql:
   host: localhost
   port: 3306
   user: root
-  pass: m871396
+  pass: mk871396
   db: commandCountDatabase

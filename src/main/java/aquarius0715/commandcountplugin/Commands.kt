@@ -119,10 +119,6 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
 
                             for (player in Bukkit.getOnlinePlayers()) {
                                 player.sendMessage(plugin.prefix + "レイドが強制終了しました。")
-                                player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
-                                plugin.StartDate = null
-                                plugin.gameStats = false
-                                plugin.playerData.clear()
                                 plugin.time = -1
                             }
                             true
@@ -205,7 +201,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
             }
         }
 
-        if (args.size == 5) {
+        if (args.size == 4) {
 
             if (args[0].equals("settime", ignoreCase = true)) {
                 if (!sender.hasPermission("admin")) {

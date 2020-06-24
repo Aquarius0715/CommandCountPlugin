@@ -20,7 +20,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
                     + player.uniqueId.toString() + "';")
             val resultSet = plugin.MySQLManager.query(sql)
             resultSet!!.next()
-            val score = resultSet.getInt("cmdCount") + 1
+            val score = resultSet.getInt("cmdCount") + plugin.config.getInt("addScore")
             val sql1 = ("UPDATE commandCountTable set cmdCount = "
                     + score
                     + " WHERE StartDate = '"
@@ -28,7 +28,8 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
                     + "' AND UUID = '"
                     + player.uniqueId.toString() + "';")
             plugin.MySQLManager.execute(sql1)
-            player.sendMessage(ChatColor.GRAY.toString() + "スコアが1増えました。")
+            player.sendMessage(plugin.prefix + ChatColor.GRAY.toString() + "スコアが" +
+                    plugin.config.getInt("addScore") + "増えました。")
         }
     }
 
@@ -47,7 +48,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
                     + "' AND UUID = '"
                     + player.uniqueId.toString() + "';")
             plugin.MySQLManager.execute(sql1)
-            player.sendMessage(ChatColor.GRAY.toString() + "スコアを" + score + "に設定しました。")
+            player.sendMessage(plugin.prefix + ChatColor.GRAY.toString() + "スコアを" + score + "に設定しました。")
             plugin.scoreBoardData.updateScoreBoard()
         }
 
@@ -69,6 +70,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
         if (!plugin.MySQLManager.connectCheck()) {
             Bukkit.broadcastMessage("DB接続に失敗したためプラグインを停止します。")
             plugin.pluginStats = false
+            plugin.gameStats = false
             return false
         }
         return true
