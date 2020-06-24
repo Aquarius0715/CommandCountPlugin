@@ -16,7 +16,7 @@ class Timer(var plugin: CommandCountPlugin?) {
             override fun run() {
                 if (plugin!!.time >= 0) {
                     if (plugin!!.time % 60 == 0 && plugin!!.time != 0) {
-                        Bukkit.broadcastMessage(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "終了まであと" + plugin!!.time / 60 + "分です")
+                        Bukkit.broadcastMessage(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "終了まであと" + plugin!!.time / 3600 + "時間です")
                     } else {
                         if (plugin!!.time == 30) {
                             Bukkit.broadcastMessage(ChatColor.GREEN.toString() + "" + ChatColor.BOLD + "終了まであと" + plugin!!.time + "秒です")

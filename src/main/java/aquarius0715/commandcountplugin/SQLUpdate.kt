@@ -43,10 +43,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
             if (!sqlConnectSafely()) {
                 return
             }
-            if (!plugin.joinOnTheWay) {
-                player.sendMessage("途中参加は許可されていません。")
-                return
-            }
+
             val sql = ("SELECT cmdCount FROM commandCountTable WHERE StartDate = '"
                     + plugin.StartDate + "' AND UUID = '"
                     + player.uniqueId.toString() + "';")
@@ -69,10 +66,6 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
 
         run {
             if (!sqlConnectSafely()) {
-                return
-            }
-            if (!plugin.joinOnTheWay) {
-                player.sendMessage("途中参加は許可されていません。")
                 return
             }
 

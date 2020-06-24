@@ -30,13 +30,13 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     false
                 } else {
                     sender.sendMessage("</cmdcount scoreboard> : スコアボードの表示・非表示を設定します。")
-                    sender.sendMessage("</cmdcount help> : この画面を表示します。")
                     if (sender.hasPermission("admin")) {
                         sender.sendMessage("</cmdcount reset> : スコアをリセットします。")
                         sender.sendMessage("</cmdcount on> : プラグインをオンにします。")
                         sender.sendMessage("</cmdcount off> : プラグインをオフにします。")
                         sender.sendMessage("</cmdcount setscore [数]> : 指定されたスコアに設定します。")
                         sender.sendMessage("</cmdcount start> : レイドをスタートします。")
+                        sender.sendMessage("</cmdcount stop> : レイドを途中停止させます。")
                         sender.sendMessage("</cmdcount settime [数]> : 制限時間を指定された秒数に設定します。")
                         sender.sendMessage("</cmdcount add> : スコアを1加えます。")
                     }
@@ -45,6 +45,12 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
             }
 
             if (args[0].equals("reset", ignoreCase = true)) {
+
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage("あなたはこのコマンドを使用することができません")
+                    return false
+                }
+
                 return if (!plugin.pluginStats) {
                     sender.sendMessage("プラグインが無効になっています")
                     false
@@ -53,18 +59,20 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         sender.sendMessage("レイドはまだ始まっていません。")
                         false
                     } else {
-                        if (!sender.hasPermission("admin")) {
-                            sender.sendMessage("あなたはこのコマンドを使用することができません")
-                            false
-                        } else {
-                            plugin.sqlUpdate.resetScore()
+                        plugin.sqlUpdate.resetScore()
                             sender.sendMessage("リセットしました。")
                             true
                         }
                     }
                 }
-            }
+
             if (args[0].equals("start", ignoreCase = true)) {
+
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    return false
+                }
+
                 return if (!plugin.pluginStats) {
                     sender.sendMessage("プラグインが無効になっています。")
                     false
@@ -73,31 +81,33 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         sender.sendMessage("レイドは既に始まっています。")
                         false
                     } else {
-                        if (!sender.hasPermission("admin")) {
-                            sender.sendMessage("あなたはこのコマンドを使用することができません")
-                            false
-                        } else {
-                            plugin.gameStats = true
-                            plugin.dateFormant.StartTime()
-                            for (player in Bukkit.getOnlinePlayers()) {
-                                plugin.sqlInsert.insertDefaultTable(player) //query
-                            }
-                            plugin.scoreBoard.createScoreBoard()
-                            plugin.timer.CountDown()
-                            try {
-                                plugin.sqlSelect.selectPlayerScoreRanking() //query
-                            } catch (e: SQLException) {
-                                e.printStackTrace()
-                            }
-                            plugin.scoreBoardData.updateScoreBoard()
-                            sender.sendMessage("レイドが始まりました。")
-                            true
+                        plugin.gameStats = true
+                        plugin.dateFormant.StartTime()
+                        for (player in Bukkit.getOnlinePlayers()) {
+                            plugin.sqlInsert.insertDefaultTable(player) //query
                         }
+                        plugin.scoreBoard.createScoreBoard()
+                        plugin.timer.CountDown()
+                        try {
+                            plugin.sqlSelect.selectPlayerScoreRanking() //query
+                        } catch (e: SQLException) {
+                            e.printStackTrace()
+                        }
+                        plugin.scoreBoardData.updateScoreBoard()
+                        sender.sendMessage("レイドが始まりました。")
+                        true
                     }
                 }
             }
 
+
             if (args[0].equals("stop", ignoreCase = true)) {
+
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage("あなたはこのコマンドを使用することができません")
+                    return false
+                }
+
                 return if (!plugin.pluginStats) {
                     sender.sendMessage("プラグインが無効になっています。")
                     false
@@ -106,23 +116,19 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         sender.sendMessage("レイドは既に停止しています。")
                         false
                     } else {
-                        if (!sender.hasPermission("admin")) {
-                            sender.sendMessage("あなたはこのコマンドを使用することができません")
-                            false
-                        } else {
+
                             for (player in Bukkit.getOnlinePlayers()) {
                                 player.sendMessage("レイドが強制終了しました。")
                                 player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
                                 plugin.StartDate = null
                                 plugin.gameStats = false
                                 plugin.playerData.clear()
-                                plugin.time = 0
+                                plugin.time = -1
                             }
                             true
                         }
                     }
                 }
-            }
 
 
             if (args[0].equals("scoreboard", ignoreCase = true)) {
@@ -158,12 +164,16 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     } catch (e: SQLException) {
                         e.printStackTrace()
                     }
-                    plugin.scoreBoardData.updateScoreBoard()
                     true
                 }
             }
 
             if (args[0].equals("on", ignoreCase = true)) {
+
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    return false
+                }
                 if (!plugin.pluginStats) {
                     plugin.pluginStats = true
                     sender.sendMessage("プラグインを有効にしました。")
@@ -172,34 +182,22 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
             }
 
             if (args[0].equals("off", ignoreCase = true)) {
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
+                    return false
+                }
+
                 if (!plugin.pluginStats) {
                     plugin.pluginStats = false
                     sender.sendMessage("プラグインを無効にしました")
                     return true
                 } else sender.sendMessage("プラグインはすでに無効です。")
             }
-
-            if (args[0].equals("joinsettings", ignoreCase = true)) {
-                if (!sender.hasPermission("admin")) {
-                    sender.sendMessage("あなたはこのコマンドを使用することができません。")
-                    return false
-                }
-                if (!plugin.pluginStats) {
-                    sender.sendMessage("プラグインは無効になっています。")
-                    return false
-                }
-                if (plugin.joinOnTheWay) {
-                    sender.sendMessage("途中参加を許可しました。")
-                    plugin.joinOnTheWay = false
-                    return false
-                } else sender.sendMessage("途中参加を禁止にしました。")
-                plugin.joinOnTheWay = true
-                return true
-            }
         }
 
         if (args.size == 2) {
             if (args[0].equals("setscore", ignoreCase = true)) {
+
                 if (!sender.hasPermission("admin")) {
                     sender.sendMessage("あなたはこのコマンドを使用することができません。")
                     return false

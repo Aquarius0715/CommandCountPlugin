@@ -15,10 +15,7 @@ class SQLSelect(var plugin: CommandCountPlugin) : Thread() {
                 plugin.MySQLManager.close()
                 return
             }
-            if (!plugin.joinOnTheWay) {
-                player!!.sendMessage("あなたはまだレイドに参加していません。")
-                return
-            }
+
             val sql = ("SELECT scoreBoardStats FROM commandCountTable WHERE StartDate = '" + plugin.StartDate + "' AND UUID = '"
                     + player!!.uniqueId.toString() + "';")
             val resultSet = plugin.MySQLManager.query(sql)
