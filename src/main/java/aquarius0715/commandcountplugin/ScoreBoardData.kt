@@ -18,7 +18,7 @@ class ScoreBoardData(var plugin: CommandCountPlugin) {
     countDown.score = 13
 
     val allScore = plugin.objective!!.getScore( ""
-            + ChatColor.DARK_GREEN + ChatColor.BOLD + "全体のスコア  "
+            + ChatColor.BLUE + ChatColor.BOLD + "全体のスコア  "
             + ChatColor.YELLOW + ""
             + ChatColor.BOLD + " : "
             + ChatColor.GREEN + ""

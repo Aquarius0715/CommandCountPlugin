@@ -1,6 +1,7 @@
 package aquarius0715.commandcountplugin
 
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
@@ -26,17 +27,29 @@ class Timer(var plugin: CommandCountPlugin?) {
                         plugin!!.seconds = (((plugin!!.time % 86400) % 3600) % 60) / 60
                     }
 
+                    if (plugin!!.time == 60) {
+                        Bukkit.broadcastMessage(plugin!!.prefix + "残り" + ChatColor.YELLOW + ChatColor.BOLD +
+                                "1分" + ChatColor.WHITE + ChatColor.BOLD + "です！")
+                    } else
+                        if ((((plugin!!.time % 86400) % 3600) % 60) / 60 <= 1 && plugin!!.time == 30) {
+                            Bukkit.broadcastMessage(plugin!!.prefix + "残り" + ChatColor.YELLOW + ChatColor.BOLD +
+                                    "30秒" + ChatColor.WHITE + ChatColor.BOLD + "です！" )
+                        } else
+                            if ((((plugin!!.time % 86400) % 3600) % 60) / 60 <= 1 && plugin!!.time <= 10 && plugin!!.time > -1) {
+                                Bukkit.broadcastMessage(plugin!!.prefix + "残り" + ChatColor.YELLOW + ChatColor.BOLD +
+                                        plugin!!.time + "秒" + ChatColor.WHITE + ChatColor.BOLD + "です！")
+                            }
+
 
                     if (plugin!!.time == -1) {
                         for (player in Bukkit.getOnlinePlayers()) {
-                            player.sendMessage("レイドが終了しました。")
+                            player.sendMessage(plugin!!.prefix + "レイドが終了しました。")
                             if (player.hasPermission("admin")) {
                                 plugin!!.sqlSelect.selectGameResult(player)
                             }
                             player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
                             plugin!!.StartDate = null
                             plugin!!.gameStats = false
-                            plugin!!.playerData.clear()
                             plugin!!.time = -1
                             cancel()
                         }

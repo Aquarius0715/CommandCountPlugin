@@ -6,8 +6,13 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.sql.SQLException
+import java.util.*
 
 class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
+
+    var cmdDate: Long = 0
+    var nowDate: Long = 0
+
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (label.equals("cmdcount", ignoreCase = true)) {
             if (sender !is Player) {
@@ -127,8 +132,13 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
 
             if (args[0].equals("add", ignoreCase = true)) {
                 val player = sender as Player
+                nowDate = Date().time
+                plugin.playerData.clear()
 
-
+                if (nowDate - cmdDate < plugin.config.getInt("coolTime") * 1000) {
+                    sender.sendMessage(plugin.prefix + "クールダウン中です。")
+                    return false
+                }
 
                 return if (!plugin.pluginStats) {
                     sender.sendMessage(plugin.prefix + "プラグインが無効になっています。")
@@ -144,7 +154,10 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     } catch (e: SQLException) {
                         e.printStackTrace()
                     }
-                    true
+
+                    cmdDate = Date().time
+
+                    return true
                 }
             }
 
