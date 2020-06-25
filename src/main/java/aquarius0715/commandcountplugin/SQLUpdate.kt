@@ -13,6 +13,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
         Bukkit.getScheduler().runTask(plugin, this)
         run {
             if (!sqlConnectSafely()) {
+                plugin.MySQLManager.close()
                 return
             }
 
@@ -31,6 +32,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
             plugin.MySQLManager.execute(sql1)
             player.sendMessage(plugin.prefix + ChatColor.GRAY.toString() + "スコアが" +
                     plugin.config.getInt("addScore") + "増えました。")
+            plugin.MySQLManager.close()
         }
     }
 
@@ -51,6 +53,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
             plugin.MySQLManager.execute(sql1)
             player.sendMessage(plugin.prefix + ChatColor.GRAY.toString() + "スコアを" + score + "に設定しました。")
             plugin.scoreBoardData.updateScoreBoard()
+            plugin.MySQLManager.close()
         }
 
     }
@@ -65,6 +68,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
         plugin.playerData.clear()
         plugin.allScore = 0
         plugin.scoreBoardData.updateScoreBoard()
+        plugin.MySQLManager.close()
     }
 
     fun sqlConnectSafely(): Boolean {
@@ -80,6 +84,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
                 plugin.gameStats = false
                 plugin.playerData.clear()
                 plugin.time = -1
+                plugin.MySQLManager.close()
             }
             return false
         }

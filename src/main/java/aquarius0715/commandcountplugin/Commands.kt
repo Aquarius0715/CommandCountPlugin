@@ -1,6 +1,7 @@
 package aquarius0715.commandcountplugin
 
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -42,6 +43,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         sender.sendMessage(plugin.prefix + "</cmdcount stop> : レイドを途中停止させます。")
                         sender.sendMessage(plugin.prefix + "</cmdcount settime [日][時間][分]> : 制限時間を指定された時間に設定します。")
                         sender.sendMessage(plugin.prefix + "</cmdcount add> : スコアを1加えます。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount result> : 前回のレイドの結果を表示します。")
                     }
                     true
                 }
@@ -63,11 +65,11 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         false
                     } else {
                         plugin.sqlUpdate.resetScore()
-                            sender.sendMessage(plugin.prefix + "リセットしました。")
-                            true
-                        }
+                        sender.sendMessage(plugin.prefix + "リセットしました。")
+                        true
                     }
                 }
+            }
 
             if (args[0].equals("start", ignoreCase = true)) {
 
@@ -84,6 +86,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         sender.sendMessage(plugin.prefix + "レイドは既に始まっています。")
                         false
                     } else {
+                        plugin.playerData.clear()
                         plugin.gameStats = true
                         plugin.dateFormant.StartTime()
                         for (player in Bukkit.getOnlinePlayers()) {
@@ -121,24 +124,23 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         false
                     } else {
 
-                            for (player in Bukkit.getOnlinePlayers()) {
-                                player.sendMessage(plugin.prefix + "レイドが強制終了しました。")
-                                plugin.time = -1
-                            }
-                            true
+                        for (player in Bukkit.getOnlinePlayers()) {
+                            player.sendMessage(plugin.prefix + "レイドが強制終了しました。")
+                            plugin.time = -1
                         }
+                        true
                     }
                 }
+            }
 
             if (args[0].equals("add", ignoreCase = true)) {
                 val player = sender as Player
                 nowDate = Date().time
-                plugin.playerData.clear()
 
                 if (nowDate - cmdDate < plugin.config.getInt("coolTime") * 1000) {
                     sender.sendMessage(plugin.prefix + "クールダウン中です。")
-                    return false
-                }
+                        return false
+                    }
 
                 return if (!plugin.pluginStats) {
                     sender.sendMessage(plugin.prefix + "プラグインが無効になっています。")
@@ -154,6 +156,8 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     } catch (e: SQLException) {
                         e.printStackTrace()
                     }
+
+                    plugin.scoreBoardData.updateScoreBoard()
 
                     cmdDate = Date().time
 
@@ -172,6 +176,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     sender.sendMessage(plugin.prefix + "プラグインを有効にしました。")
                     return true
                 } else sender.sendMessage(plugin.prefix + "プラグインはすでに有効です。")
+                return true
             }
 
             if (args[0].equals("off", ignoreCase = true)) {
@@ -185,7 +190,34 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     sender.sendMessage(plugin.prefix + "プラグインを無効にしました")
                     return true
                 } else sender.sendMessage(plugin.prefix + "プラグインはすでに無効です。")
+                return true
             }
+
+            if (args[0].equals("result", ignoreCase = true)) {
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
+                    return false
+                }
+
+                if (plugin.gameStats) {
+                    sender.sendMessage(plugin.prefix + "レイドはまだ終わっていません。")
+                    return false
+                }
+
+                if (!plugin.pluginStats) {
+                    sender.sendMessage(plugin.prefix + "プラグインは停止しています。")
+                    return false
+                }
+
+                sender.sendMessage(plugin.prefix + "======前回の結果======")
+                for ((count) in plugin.playerData.indices.withIndex()) {
+                    sender.sendMessage(plugin.prefix + (count + 1) + "位 : " + plugin.playerData[count]!!.playerName + " : "
+                            + ChatColor.GREEN + "" + ChatColor.BOLD + plugin.playerData[count]!!.score)
+                }
+                sender.sendMessage(plugin.prefix + "======前回の結果======")
+            }
+
+            return false
         }
 
         if (args.size == 2) {

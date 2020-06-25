@@ -48,11 +48,11 @@ class Timer(var plugin: CommandCountPlugin?) {
                                 plugin!!.sqlSelect.selectGameResult(player)
                             }
                             player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
-                            plugin!!.StartDate = null
-                            plugin!!.gameStats = false
-                            plugin!!.time = -1
-                            cancel()
                         }
+                        plugin!!.StartDate = null
+                        plugin!!.gameStats = false
+                        plugin!!.time = -1
+                        cancel()
                     }
                 }
                 plugin!!.time--
@@ -68,8 +68,7 @@ class Timer(var plugin: CommandCountPlugin?) {
         object : BukkitRunnable() {
             override fun run() {
 
-                if (!plugin!!.gameStats && plugin!!.time <= -1) {
-
+                if (plugin!!.time == -1) {
                     for (player in Bukkit.getOnlinePlayers()) {
                         player.scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).newScoreboard
                     }

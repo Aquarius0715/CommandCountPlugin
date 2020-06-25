@@ -64,6 +64,7 @@ class SQLSelect(var plugin: CommandCountPlugin) : Thread() {
                 plugin.gameStats = false
                 plugin.playerData.clear()
                 plugin.time = -1
+                plugin.MySQLManager.close()
             }
             return false
         }
