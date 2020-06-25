@@ -44,6 +44,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         sender.sendMessage(plugin.prefix + "</cmdcount settime [日][時間][分]> : 制限時間を指定された時間に設定します。")
                         sender.sendMessage(plugin.prefix + "</cmdcount add> : スコアを1加えます。")
                         sender.sendMessage(plugin.prefix + "</cmdcount result> : 前回のレイドの結果を表示します。")
+                        sender.sendMessage(plugin.prefix + "</cmdcount cooltime> : クールタイムを設定します。")
                     }
                     true
                 }
@@ -139,17 +140,18 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
 
                 if (nowDate - cmdDate < plugin.config.getInt("coolTime") * 1000) {
                     sender.sendMessage(plugin.prefix + "クールダウン中です。")
-                        return false
-                    }
+                    return false
+                }
 
                 return if (!plugin.pluginStats) {
                     sender.sendMessage(plugin.prefix + "プラグインが無効になっています。")
-                    false
+                    return false
                 } else {
                     if (!plugin.gameStats) {
                         sender.sendMessage(plugin.prefix + "レイドはまだ始まっていません。")
                         return false
                     }
+
                     try {
                         plugin.sqlUpdate.updateScore(player) //query
                         plugin.sqlSelect.selectPlayerScoreRanking() //query
@@ -243,6 +245,30 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     }
                     plugin.sqlUpdate.updateScoreAdmin(sender as Player, plugin.addScoreOp)
                     plugin.scoreBoardData.updateScoreBoard()
+                    return true
+                }
+            }
+
+            if (args[0].equals("cooltime", ignoreCase = true)) {
+
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
+                    return false
+                }
+                if (!plugin.pluginStats) {
+                    sender.sendMessage(plugin.prefix + "プラグインは無効になっています。")
+                    return false
+                } else {
+                    try {
+
+                        plugin.addScoreOp = args[1].toInt()
+                    } catch (e: NumberFormatException) {
+                        sender.sendMessage(plugin.prefix + " 設定する数を入力してください。")
+                        return false
+                    }
+                    plugin.config.set("coolTime", args[1].toInt())
+                    plugin.config.save("config.yml")
+                    sender.sendMessage(plugin.prefix + "クールタイムを" + args[1].toInt() + "秒にしました。")
                     return true
                 }
             }
