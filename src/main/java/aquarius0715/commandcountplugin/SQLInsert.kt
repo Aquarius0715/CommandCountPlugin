@@ -9,7 +9,6 @@ class SQLInsert(var plugin: CommandCountPlugin) : Thread() {
         Bukkit.getScheduler().runTask(plugin, this)
         run {
             if (!sqlConnectSafely()) {
-                plugin.MySQLManager.close()
                 return
             }
             val sql = ("INSERT INTO commandCountTable (StartDate, UUID, playerName, cmdCount, scoreBoardStats) VALUE(" + "'"
@@ -19,7 +18,6 @@ class SQLInsert(var plugin: CommandCountPlugin) : Thread() {
                     + 0 + " , "
                     + true + ");")
             plugin.MySQLManager.execute(sql)
-            plugin.MySQLManager.close()
         }
     }
 

@@ -138,7 +138,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                 val player = sender as Player
                 nowDate = Date().time
 
-                if (nowDate - cmdDate < plugin.config.getInt("coolTime") * 1000) {
+                if (nowDate - cmdDate < plugin.config.getDouble("coolTime") * 1000) {
                     sender.sendMessage(plugin.prefix + "クールダウン中です。")
                     return false
                 }
@@ -260,18 +260,41 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     return false
                 } else {
                     try {
+                        args[1].toDouble()
+                    } catch (e: NumberFormatException) {
+                        sender.sendMessage(plugin.prefix + " 設定する数を入力してください。")
+                        return false
+                    }
+                    plugin.config.set("coolTime", args[1].toDouble())
+                    plugin.config.save("config.yml")
+                    sender.sendMessage(plugin.prefix + "クールタイムを" + args[1].toDouble() + "秒にしました。")
+                    return true
+                }
+            }
 
+            if (args[0].equals("updatetime", ignoreCase = true)) {
+
+                if (!sender.hasPermission("admin")) {
+                    sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
+                    return false
+                }
+                if (!plugin.pluginStats) {
+                    sender.sendMessage(plugin.prefix + "プラグインは無効になっています。")
+                    return false
+                } else {
+                    try {
                         plugin.addScoreOp = args[1].toInt()
                     } catch (e: NumberFormatException) {
                         sender.sendMessage(plugin.prefix + " 設定する数を入力してください。")
                         return false
                     }
-                    plugin.config.set("coolTime", args[1].toInt())
+                    plugin.config.set("updateTime", args[1].toInt())
                     plugin.config.save("config.yml")
-                    sender.sendMessage(plugin.prefix + "クールタイムを" + args[1].toInt() + "秒にしました。")
+                    sender.sendMessage(plugin.prefix + "スコアボードの更新速度をを" + args[1].toInt() + "秒にしました。")
                     return true
                 }
             }
+
         }
 
         if (args.size == 4) {
@@ -286,21 +309,21 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     return false
                 } else {
                     try {
-                        args[1].toInt()
-                        args[2].toInt()
-                        args[3].toInt()
+                        args[1].toDouble()
+                        args[2].toDouble()
+                        args[3].toDouble()
                     } catch (e: java.lang.NumberFormatException) {
                         sender.sendMessage(plugin.prefix + "設定する数を入力してください。")
                         return false
                     }
-                    plugin.config.set("days", args[1].toInt())
-                    plugin.config.set("hours", args[2].toInt())
-                    plugin.config.set("minutes", args[3].toInt())
+                    plugin.config.set("days", args[1].toDouble())
+                    plugin.config.set("hours", args[2].toDouble())
+                    plugin.config.set("minutes", args[3].toDouble())
                     plugin.config.save("config.yml")
                     sender.sendMessage(plugin.prefix + "レイド時間が"
-                            + args[1].toInt() + "日"
-                            + args[2].toInt() + "時間"
-                            + args[3].toInt() + "分に設定されました。")
+                            + args[1].toDouble() + "日"
+                            + args[2].toDouble() + "時間"
+                            + args[3].toDouble() + "分に設定されました。")
                     return true
                 }
             }

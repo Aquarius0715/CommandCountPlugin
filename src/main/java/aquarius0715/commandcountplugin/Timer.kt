@@ -77,6 +77,6 @@ class Timer(var plugin: CommandCountPlugin?) {
 
                 plugin!!.scoreBoardData.updateScoreBoard()
             }
-        }.runTaskTimer(plugin!!, 0, plugin!!.config.getLong("updateTime"))
+        }.runTaskTimer(plugin!!, 0, plugin!!.config.getLong("updateTime") * 20)
     }
 }

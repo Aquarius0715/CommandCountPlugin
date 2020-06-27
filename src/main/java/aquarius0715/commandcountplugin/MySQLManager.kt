@@ -61,10 +61,10 @@ class MySQLManager(private val plugin: JavaPlugin, private val conName: String) 
         try {
             st = con!!.createStatement()
             connected = true
-            plugin.logger.info("[" + conName + "] Connected to the database.")
+            plugin.logger.info("[$conName] Connected to the database.")
         } catch (var6: SQLException) {
             connected = false
-            plugin.logger.info("[" + conName + "] Could not connect to the database.")
+            plugin.logger.info("[$conName] Could not connect to the database.")
         }
         MySQL!!.close(con)
         return connected

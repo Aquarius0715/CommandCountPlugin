@@ -34,8 +34,7 @@ class MySQLFunc(host: String?, db: String?, user: String?, pass: String?, port: 
     }
 
     fun close(c: Connection?) {
-        var c = c
-        c = null
+        c?.close()
     }
 
     init {

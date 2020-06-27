@@ -13,19 +13,23 @@ class SQLSelect(var plugin: CommandCountPlugin) : Thread() {
         Bukkit.getScheduler().runTask(plugin, this)
         run {
             if (!sqlConnectSafely()) {
-                plugin.MySQLManager.close()
                 return
             }
             val sql = "SELECT * FROM commandCountTable WHERE StartDate = '" + plugin.StartDate + "' ORDER BY cmdCount DESC LIMIT 10;"
             val resultSet = plugin.MySQLManager.query(sql)
             plugin.playerData.clear()
-            while (resultSet!!.next()) {
+
+            while (resultSet!!.next()) { // ぬるぽ
                 plugin.playerData.add(PlayerData(resultSet.getString("playerName"), resultSet.getInt("cmdCount")))
             }
+            resultSet.close()
+            plugin.MySQLManager.close()
+
             val sql1 = "SELECT SUM(cmdCount) from commandCountTable WHERE StartDate = '" + plugin.StartDate + "';"
             val resultSet1 = plugin.MySQLManager.query(sql1)
             resultSet1!!.next()
             plugin.allScore = resultSet1.getInt("SUM(cmdCount)")
+            resultSet1.close()
             plugin.MySQLManager.close()
         }
     }
@@ -34,7 +38,6 @@ class SQLSelect(var plugin: CommandCountPlugin) : Thread() {
         Bukkit.getScheduler().runTask(plugin, this)
         run {
             if (!sqlConnectSafely()) {
-                plugin.MySQLManager.close()
                 return
             }
             player.sendMessage(plugin.prefix + "データを確認しています...")
@@ -43,10 +46,10 @@ class SQLSelect(var plugin: CommandCountPlugin) : Thread() {
             val resultSet = plugin.MySQLManager.query(sql)
             if (resultSet == null) {
                 player.sendMessage(plugin.prefix + "データベースに情報が登録されていません、エラーが発生しました。")
-                plugin.MySQLManager.close()
                 return
             }
                 player.sendMessage(plugin.prefix + "データは正常に登録されています。レイドを終了します。")
+            resultSet.close()
             plugin.MySQLManager.close()
         }
     }

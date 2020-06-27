@@ -13,7 +13,6 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
         Bukkit.getScheduler().runTask(plugin, this)
         run {
             if (!sqlConnectSafely()) {
-                plugin.MySQLManager.close()
                 return
             }
 
@@ -21,8 +20,12 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
                     + plugin.StartDate + "' AND UUID = '"
                     + player.uniqueId.toString() + "';")
             val resultSet = plugin.MySQLManager.query(sql)
+
             resultSet!!.next()
             val score = resultSet.getInt("cmdCount") + plugin.config.getInt("addScore")
+            resultSet.close()
+            plugin.MySQLManager.close()
+
             val sql1 = ("UPDATE commandCountTable set cmdCount = "
                     + score
                     + " WHERE StartDate = '"
@@ -32,7 +35,6 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
             plugin.MySQLManager.execute(sql1)
             player.sendMessage(plugin.prefix + ChatColor.GRAY.toString() + "スコアが" +
                     plugin.config.getInt("addScore") + "増えました。")
-            plugin.MySQLManager.close()
         }
     }
 
@@ -53,9 +55,7 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
             plugin.MySQLManager.execute(sql1)
             player.sendMessage(plugin.prefix + ChatColor.GRAY.toString() + "スコアを" + score + "に設定しました。")
             plugin.scoreBoardData.updateScoreBoard()
-            plugin.MySQLManager.close()
         }
-
     }
 
     fun resetScore() {
