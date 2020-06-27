@@ -9,13 +9,15 @@ import java.util.*
 class SQLSelect(var plugin: CommandCountPlugin) : Thread() {
 
     @Throws(SQLException::class)
-    fun selectPlayerScoreRanking() {
+    fun selectPlayerScoreRanking(player: Player) {
         Bukkit.getScheduler().runTask(plugin, this)
         run {
             if (!sqlConnectSafely()) {
                 return
             }
-            val sql = "SELECT * FROM commandCountTable WHERE StartDate = '" + plugin.StartDate + "' ORDER BY cmdCount DESC LIMIT 10;"
+            val sql = "SELECT * from commandCountTable " +
+                    "WHERE StartDate = '" + plugin.StartDate + "' " +
+                    "ORDER BY cmdCount DESC LIMIT 10;"
             val resultSet = plugin.MySQLManager.query(sql)
             plugin.playerData.clear()
 

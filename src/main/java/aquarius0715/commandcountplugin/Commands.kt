@@ -74,6 +74,8 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
 
             if (args[0].equals("start", ignoreCase = true)) {
 
+                var player = sender as Player
+
                 if (!sender.hasPermission("admin")) {
                     sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
                     return false
@@ -90,13 +92,13 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                         plugin.playerData.clear()
                         plugin.gameStats = true
                         plugin.dateFormant.StartTime()
-                        for (player in Bukkit.getOnlinePlayers()) {
-                            plugin.sqlInsert.insertDefaultTable(player) //query
+                        for (player1 in Bukkit.getOnlinePlayers()) {
+                            plugin.sqlInsert.insertDefaultTable(player1) //query
                         }
                         plugin.scoreBoard.createScoreBoard()
                         plugin.timer.CountDown()
                         try {
-                            plugin.sqlSelect.selectPlayerScoreRanking() //query
+                            plugin.sqlSelect.selectPlayerScoreRanking(player) //query
                         } catch (e: SQLException) {
                             e.printStackTrace()
                         }
@@ -143,7 +145,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
                     return false
                 }
 
-                return if (!plugin.pluginStats) {
+                if (!plugin.pluginStats) {
                     sender.sendMessage(plugin.prefix + "プラグインが無効になっています。")
                     return false
                 } else {
@@ -154,7 +156,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
 
                     try {
                         plugin.sqlUpdate.updateScore(player) //query
-                        plugin.sqlSelect.selectPlayerScoreRanking() //query
+                        plugin.sqlSelect.selectPlayerScoreRanking(player) //query
                     } catch (e: SQLException) {
                         e.printStackTrace()
                     }
