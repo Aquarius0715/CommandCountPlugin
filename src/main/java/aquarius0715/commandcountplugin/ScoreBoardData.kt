@@ -36,9 +36,9 @@ class ScoreBoardData(var plugin: CommandCountPlugin) {
 
         when (count) {
 
-            0 -> prefix = "" + ChatColor.GOLD + "" + ChatColor.BOLD + "♔第1位♔ " + ChatColor.WHITE + "" + ChatColor.BOLD
+            0 -> prefix = "" + ChatColor.YELLOW + "" + ChatColor.BOLD + "♔第1位♔ " + ChatColor.WHITE + "" + ChatColor.BOLD
             1 -> prefix = "" + ChatColor.GRAY + "" + ChatColor.BOLD + "♕第2位♕ " + ChatColor.WHITE + "" + ChatColor.BOLD
-            2 -> prefix = "" + ChatColor.YELLOW + "" + ChatColor.BOLD + "♖第3位♖ " + ChatColor.WHITE + "" + ChatColor.BOLD
+            2 -> prefix = "" + ChatColor.GOLD + "" + ChatColor.BOLD + "♖第3位♖ " + ChatColor.WHITE + "" + ChatColor.BOLD
             3 -> prefix = "" + ChatColor.WHITE + "" + ChatColor.BOLD + " 第4位  " + ChatColor.WHITE + "" + ChatColor.BOLD
             4 -> prefix = "" + ChatColor.WHITE + "" + ChatColor.BOLD + " 第5位  " + ChatColor.WHITE + "" + ChatColor.BOLD
             5 -> prefix = "" + ChatColor.WHITE + "" + ChatColor.BOLD + " 第6位  " + ChatColor.WHITE + "" + ChatColor.BOLD

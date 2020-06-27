@@ -19,10 +19,15 @@ class SQLUpdate(var plugin: CommandCountPlugin) : Thread() {
             val sql = ("select cmdCount FROM commandCountTable WHERE StartDate = '"
                     + plugin.StartDate + "' AND UUID = '"
                     + player.uniqueId.toString() + "';")
-            val resultSet = plugin.MySQLManager.query(sql)
+            var resultSet = plugin.MySQLManager.query(sql)
 
             if (!resultSet!!.next()) {
                 plugin.sqlInsert.insertDefaultTable(player)
+                val sql2 = ("select cmdCount FROM commandCountTable WHERE StartDate = '"
+                        + plugin.StartDate + "' AND UUID = '"
+                        + player.uniqueId.toString() + "';")
+                resultSet = plugin.MySQLManager.query(sql2)
+                resultSet!!.next()
             }
 
             val score = resultSet.getInt("cmdCount") + plugin.config.getInt("addScore")
