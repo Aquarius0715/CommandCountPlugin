@@ -74,7 +74,7 @@ class Commands(var plugin: CommandCountPlugin) : CommandExecutor {
 
             if (args[0].equals("start", ignoreCase = true)) {
 
-                var player = sender as Player
+                val player = sender as Player
 
                 if (!sender.hasPermission("admin")) {
                     sender.sendMessage(plugin.prefix + "あなたはこのコマンドを使用することができません。")
